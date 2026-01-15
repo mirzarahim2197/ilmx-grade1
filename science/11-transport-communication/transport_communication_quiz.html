@@ -949,7 +949,7 @@
         function createFloatingEmoji(emoji) {
             const floatingEmoji = document.createElement('div');
             floatingEmoji.className = 'floating-emoji';
-            floatingEmoji.textContent = emoji;
+            floatingEmoji.innerHTML = emoji;
             floatingEmoji.style.left = Math.random() * 80 + 10 + '%';
             floatingEmoji.style.top = Math.random() * 50 + 50 + '%';
             document.body.appendChild(floatingEmoji);
