@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌍 Little Azra's Travel Agency ✈️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', sans-serif;
+            background: linear-gradient(135deg, #87CEEB 0%, #98FB98 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .game-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Welcome Page Styles */
+        .welcome-page {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #FFE4E1, #F0F8FF, #F5FFFA);
+            animation: welcomeSlideIn 1s ease-out;
+            position: relative;
+        }
+
+        .back-link {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            text-decoration: none;
+            background: #FF6B6B;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 0 #FFD93D;
+            transition: transform 0.2s;
+        }
+
+        .back-link:hover {
+            transform: translateY(-2px);
+        }
+
+        @keyframes welcomeSlideIn {
+            0% {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .welcome-page h1 {
+            font-size: 3rem;
+            color: #FF6B6B;
+            text-shadow: 3px 3px 0px #FFD93D;
+            margin-bottom: 15px;
+        }
+
+
+
+        .goal-section {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            border: 3px solid #FFD93D;
+        }
+
+        .goal-section h2 {
+            font-size: 2.2rem;
+            color: #FF6B6B;
+            margin-bottom: 25px;
+        }
+
+        .goal-cards {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .goal-card {
+            background: linear-gradient(135deg, #FF9A9E, #FECFEF);
+            border-radius: 20px;
+            padding: 25px;
+            border: 3px solid #FF6B6B;
+            transition: all 0.3s ease;
+        }
+
+        .goal-card:hover {
+            transform: translateY(-5px) scale(1.02);
+        }
+
+        .goal-emoji {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .goal-card p {
+            font-size: 1.3rem;
+            color: #333;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .start-game-btn {
+            background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 20px 40px;
+            font-family: inherit;
+            font-size: 1.6rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 40px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .start-game-btn:hover {
+            transform: translateY(-3px) scale(1.1);
+        }
+
+        /* Customer Selection Page */
+        .customer-selection-page {
+            padding: 15px;
+            background: linear-gradient(135deg, #FFE4E1, #F0F8FF, #F5FFFA);
+            animation: pageSlideIn 0.6s ease-out;
+        }
+
+        @keyframes pageSlideIn {
+            0% {
+                transform: translateX(100px);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .page-header h1 {
+            font-size: 2.2rem;
+            color: #FF6B6B;
+            text-shadow: 2px 2px 0px #FFD93D;
+            margin-bottom: 10px;
+        }
+
+        .header-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .restart-header-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #FF6B6B;
+            color: #FF6B6B;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .restart-header-btn:hover {
+            background: #FF6B6B;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .progress-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            padding: 12px 20px;
+            border: 3px solid #4ECDC4;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .customers-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .customer-card-large {
+            background: linear-gradient(135deg, #E1F5FE, #81D4FA);
+            border: 4px solid #29B6F6;
+            border-radius: 20px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .customer-card-large:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .customer-card-large.completed {
+            background: linear-gradient(135deg, #6BCF7F, #17B978);
+            border-color: #17B978;
+        }
+
+        .customer-emoji-large {
+            font-size: 2.8rem;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .customer-name-large {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        .customer-request-large {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .customer-status {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #666;
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+        }
+
+        /* Make the 5th customer span 2 columns to center it */
+        .customer-card-large:nth-child(5) {
+            grid-column: span 2;
+            max-width: 50%;
+            margin: 0 auto;
+        }
+
+        .customer-status.helped {
+            color: white;
+            background: #17B978;
+        }
+
+        .completion-section {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .final-celebration {
+            background: linear-gradient(135deg, #FFD93D, #FFCC5C);
+            border: 4px solid #FF9500;
+            border-radius: 25px;
+            padding: 40px;
+            animation: celebrationBounce 1s ease-out;
+        }
+
+        @keyframes celebrationBounce {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .final-celebration h2 {
+            font-size: 2.5rem;
+            color: #FF6B6B;
+            margin-bottom: 15px;
+        }
+
+        .final-celebration p {
+            font-size: 1.4rem;
+            color: #333;
+            margin: 10px 0;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 15px 30px;
+            font-family: inherit;
+            font-size: 1.3rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        /* Individual Customer Task Page */
+        .customer-task-page {
+            padding: 20px;
+            background: linear-gradient(135deg, #E6F3FF, #F0FFF0);
+            animation: pageSlideIn 0.6s ease-out;
+        }
+
+        .task-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            gap: 15px;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #FF6B6B, #FF5252);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 12px 20px;
+            font-family: inherit;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .current-customer-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .current-emoji {
+            font-size: 3rem;
+        }
+
+        .current-name {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .current-request {
+            font-size: 1.2rem;
+            color: #555;
+        }
+
+        .transport-selection-area h2 {
+            text-align: center;
+            font-size: 2rem;
+            color: #4ECDC4;
+            margin-bottom: 25px;
+        }
+
+        .transport-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .transport-option {
+            background: linear-gradient(135deg, #FFFFFF, #F8F9FA);
+            border: 3px solid #4ECDC4;
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .transport-option:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border-color: #FF6B6B;
+        }
+
+        .transport-option.selected {
+            background: linear-gradient(135deg, #FF6B6B, #FF5252);
+            color: white;
+            border-color: #FF5252;
+        }
+
+        .transport-option.correct {
+            background: linear-gradient(135deg, #6BCF7F, #17B978);
+            color: white;
+            border-color: #17B978;
+            animation: correctPulse 1s ease-out;
+        }
+
+        @keyframes correctPulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 0 50px #6BCF7F;
+            }
+
+            100% {
+                transform: scale(1.05);
+            }
+        }
+
+        .transport-option.incorrect {
+            background: linear-gradient(135deg, #FF6B6B, #EE5A52);
+            color: white;
+            border-color: #EE5A52;
+            animation: shake 0.5s ease-out;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-10px);
+            }
+
+            75% {
+                transform: translateX(10px);
+            }
+        }
+
+        .transport-icon-large {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .transport-option strong {
+            display: block;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .transport-option small {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .result-area {
+            text-align: center;
+        }
+
+        .result-content {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            border: 3px solid #6BCF7F;
+            animation: resultSlideIn 0.6s ease-out;
+        }
+
+        @keyframes resultSlideIn {
+            0% {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .continue-btn {
+            background: linear-gradient(135deg, #6BCF7F, #17B978);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 15px 30px;
+            font-family: inherit;
+            font-size: 1.3rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .continue-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        .boarding-pass {
+            background: linear-gradient(45deg, #FF6B6B, #FFD93D);
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .feedback {
+            background: #E8F5E8;
+            border: 2px solid #4CAF50;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #2E7D32;
+            font-size: 1.1em;
+        }
+
+        .feedback.qatar-story {
+            background: #FFF3E0;
+            border-color: #FF9800;
+            color: #E65100;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .game-container {
+                border-radius: 15px;
+            }
+
+            .welcome-page {
+                padding: 20px 15px;
+            }
+
+            .welcome-page h1 {
+                font-size: 2.2rem;
+                margin-bottom: 10px;
+            }
+
+            .welcome-badge {
+                font-size: 1.1rem;
+                padding: 10px 20px;
+                margin-bottom: 20px;
+            }
+
+            .goal-section {
+                padding: 20px;
+                margin: 20px 0;
+            }
+
+            .goal-section h2 {
+                font-size: 1.8rem;
+                margin-bottom: 15px;
+            }
+
+            .goal-card {
+                padding: 15px;
+            }
+
+            .goal-card p {
+                font-size: 1.1rem;
+            }
+
+            .goal-emoji {
+                font-size: 2.5rem;
+                margin-bottom: 10px;
+            }
+
+            .start-game-btn {
+                font-size: 1.3rem;
+                padding: 15px 30px;
+                margin-top: 20px;
+            }
+
+            /* Customer Selection Page Mobile */
+            .customer-selection-page {
+                padding: 15px;
+            }
+
+            .page-header {
+                margin-bottom: 20px;
+            }
+
+            .page-header h1 {
+                font-size: 1.9rem;
+                margin-bottom: 10px;
+            }
+
+            .progress-display {
+                flex-direction: column;
+                gap: 5px;
+                padding: 10px 15px;
+                font-size: 1rem;
+            }
+
+            .customers-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+                margin-bottom: 15px;
+            }
+
+            .customer-card-large {
+                padding: 10px;
+            }
+
+            .customer-emoji-large {
+                font-size: 2.2rem;
+                margin-bottom: 5px;
+            }
+
+            .customer-name-large {
+                font-size: 1.1rem;
+                margin-bottom: 4px;
+            }
+
+            .customer-request-large {
+                font-size: 0.85rem;
+                margin-bottom: 5px;
+                line-height: 1.2;
+            }
+
+            .customer-status {
+                font-size: 0.75rem;
+                padding: 4px 8px;
+            }
+
+            /* Keep 5th customer centered but smaller on mobile */
+            .customer-card-large:nth-child(5) {
+                grid-column: span 2;
+                max-width: 60%;
+                margin: 0 auto;
+            }
+
+            /* Customer Task Page Mobile */
+            .customer-task-page {
+                padding: 15px;
+            }
+
+            .task-header {
+                margin-bottom: 15px;
+                gap: 10px;
+            }
+
+            .back-btn {
+                padding: 8px 15px;
+                font-size: 1rem;
+            }
+
+            .current-emoji {
+                font-size: 2.2rem;
+            }
+
+            .current-name {
+                font-size: 1.3rem;
+            }
+
+            .current-request {
+                font-size: 1rem;
+            }
+
+            .transport-selection-area h2 {
+                font-size: 1.5rem;
+                margin-bottom: 15px;
+            }
+
+            /* CRITICAL: Keep 2x4 grid on mobile, not single column */
+            .transport-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 8px;
+                margin-bottom: 15px;
+            }
+
+            .transport-option {
+                padding: 8px 4px;
+                border-radius: 12px;
+            }
+
+            .transport-icon-large {
+                font-size: 1.8rem;
+                margin-bottom: 4px;
+            }
+
+            .transport-option strong {
+                font-size: 0.85rem;
+                margin-bottom: 2px;
+                line-height: 1.1;
+            }
+
+            .transport-option small {
+                font-size: 0.7rem;
+                line-height: 1;
+            }
+
+            .result-area {
+                margin-top: 15px;
+            }
+
+            .result-content {
+                padding: 15px;
+                margin-bottom: 10px;
+            }
+
+            .continue-btn {
+                font-size: 1.1rem;
+                padding: 10px 20px;
+            }
+
+            .boarding-pass {
+                padding: 15px;
+                margin: 10px 0;
+            }
+
+            .feedback {
+                padding: 12px;
+                margin: 10px 0;
+                font-size: 1rem;
+            }
+
+            /* Final celebration mobile */
+            .final-celebration {
+                padding: 20px;
+            }
+
+            .final-celebration h2 {
+                font-size: 2rem;
+                margin-bottom: 10px;
+            }
+
+            .final-celebration p {
+                font-size: 1.2rem;
+                margin: 5px 0;
+            }
+
+            .restart-btn {
+                font-size: 1.2rem;
+                padding: 12px 25px;
+            }
+        }
+
+        /* Extra small screens - even more compact */
+        @media (max-width: 480px) {
+            body {
+                padding: 5px;
+            }
+
+            .welcome-page h1 {
+                font-size: 2rem;
+            }
+
+            .goal-section {
+                padding: 15px;
+                margin: 15px 0;
+            }
+
+            .customer-selection-page,
+            .customer-task-page {
+                padding: 10px;
+            }
+
+            .customer-card-large {
+                padding: 8px;
+            }
+
+            .customer-emoji-large {
+                font-size: 2rem;
+                margin-bottom: 4px;
+            }
+
+            .customer-name-large {
+                font-size: 1rem;
+                margin-bottom: 3px;
+            }
+
+            .customer-request-large {
+                font-size: 0.8rem;
+                margin-bottom: 4px;
+                line-height: 1.1;
+            }
+
+            .customer-status {
+                font-size: 0.7rem;
+                padding: 3px 6px;
+            }
+
+            .customers-grid {
+                gap: 6px;
+            }
+
+            .transport-grid {
+                gap: 6px;
+            }
+
+            .transport-option {
+                padding: 6px 2px;
+            }
+
+            .transport-icon-large {
+                font-size: 1.6rem;
+                margin-bottom: 3px;
+            }
+
+            .transport-option strong {
+                font-size: 0.8rem;
+            }
+
+            .transport-option small {
+                font-size: 0.65rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="game-container">
+        <!-- Welcome Page -->
+        <div id="welcomePage" class="welcome-page">
+            <div class="welcome-header">
+                <h1>🌍 Little Azra's Travel Agency ✈️</h1>
+
+            </div>
+
+            <button class="start-game-btn" onclick="showCustomerSelection()">
+                🚀 Start My Travel Agency Adventure! 🚀
+            </button>
+
+            <div class="welcome-content">
+                <div class="goal-section">
+                    <h2>🎯 Your Fun Mission:</h2>
+                    <div class="goal-cards">
+                        <div class="goal-card">
+                            <div class="goal-emoji">🐻</div>
+                            <p>Help 5 animal friends choose the <strong>best transport</strong> for their trips!</p>
+                        </div>
+                        <div class="goal-card">
+                            <div class="goal-emoji">🤔</div>
+                            <p>Think about <strong>how far</strong> they want to go!</p>
+                        </div>
+                        <div class="goal-card">
+                            <div class="goal-emoji">🏆</div>
+                            <p>Make smart choices and become a <strong>Transport Expert</strong>!</p>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+        <!-- Customer Selection Screen -->
+        <div id="customerSelectionPage" class="customer-selection-page hidden">
+            <div class="page-header">
+                <h1>🎭 Choose a Customer to Help!</h1>
+                <div class="header-controls">
+                    <div class="progress-display">
+                        <span><span id="helpedCount">0</span>/5 customers helped</span>
+                        <span>Score: <span id="totalScore">0</span></span>
+                    </div>
+                    <button class="restart-header-btn" onclick="restartGame()">
+                        🏠 Restart
+                    </button>
+                </div>
+            </div>
+
+            <div class="customers-grid">
+                <div class="customer-card-large" data-customer="teddy" onclick="selectCustomer('teddy')">
+                    <span class="customer-emoji-large">🧸</span>
+                    <div class="customer-name-large">Teddy Bear</div>
+                    <div class="customer-request-large">"I want to visit the nearby park to play!"</div>
+                    <div class="customer-status" id="status-teddy">Ready to help!</div>
+                </div>
+
+                <div class="customer-card-large" data-customer="doll" onclick="selectCustomer('doll')">
+                    <span class="customer-emoji-large">👧</span>
+                    <div class="customer-name-large">Emma Doll</div>
+                    <div class="customer-request-large">"I need to visit grandma in the next city!"</div>
+                    <div class="customer-status" id="status-doll">Ready to help!</div>
+                </div>
+
+                <div class="customer-card-large" data-customer="lion" onclick="selectCustomer('lion')">
+                    <span class="customer-emoji-large">🦁</span>
+                    <div class="customer-name-large">Leo Lion</div>
+                    <div class="customer-request-large">"I want to explore the desert!"</div>
+                    <div class="customer-status" id="status-lion">Ready to help!</div>
+                </div>
+
+                <div class="customer-card-large" data-customer="penguin" onclick="selectCustomer('penguin')">
+                    <span class="customer-emoji-large">🐧</span>
+                    <div class="customer-name-large">Penny Penguin</div>
+                    <div class="customer-request-large">"I need to cross the ocean to visit my friends!"</div>
+                    <div class="customer-status" id="status-penguin">Ready to help!</div>
+                </div>
+
+                <div class="customer-card-large" data-customer="monkey" onclick="selectCustomer('monkey')">
+                    <span class="customer-emoji-large">🐵</span>
+                    <div class="customer-name-large">Max Monkey</div>
+                    <div class="customer-request-large">"I want to visit a faraway country!"</div>
+                    <div class="customer-status" id="status-monkey">Ready to help!</div>
+                </div>
+            </div>
+
+            <div class="completion-section hidden" id="allCompletedSection">
+                <div class="final-celebration">
+                    <h2>🎉 Amazing Work! 🎉</h2>
+                    <p>You helped all your animal friends!</p>
+                    <p>You're officially a <strong>Transport Expert</strong>! 🏆</p>
+                    <button class="restart-btn" onclick="restartGame()">🏠 Back to Welcome & Play Again!</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Individual Customer Screen -->
+        <div id="customerTaskPage" class="customer-task-page hidden">
+            <div class="task-header">
+                <button class="back-btn" onclick="backToCustomerSelection()">← Back to Customers</button>
+                <div class="current-customer-info">
+                    <span id="currentCustomerEmoji" class="current-emoji">🧸</span>
+                    <div>
+                        <div id="currentCustomerName" class="current-name">Teddy Bear</div>
+                        <div id="currentCustomerRequest" class="current-request">"I want to visit the nearby park!"
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="transport-selection-area">
+                <h2>🚗 Choose the Best Transport:</h2>
+                <div class="transport-grid">
+                    <button class="transport-option" data-transport="walk" onclick="selectTransport('walk')">
+                        <span class="transport-icon-large">🚶</span>
+                        <strong>Walking</strong>
+                        <small>For short distances</small>
+                    </button>
+                    <button class="transport-option" data-transport="bicycle" onclick="selectTransport('bicycle')">
+                        <span class="transport-icon-large">🚲</span>
+                        <strong>Bicycle</strong>
+                        <small>Quick & healthy</small>
+                    </button>
+                    <button class="transport-option" data-transport="car" onclick="selectTransport('car')">
+                        <span class="transport-icon-large">🚗</span>
+                        <strong>Car/Bus</strong>
+                        <small>For city trips</small>
+                    </button>
+                    <button class="transport-option" data-transport="train" onclick="selectTransport('train')">
+                        <span class="transport-icon-large">🚂</span>
+                        <strong>Train</strong>
+                        <small>Fast land transport</small>
+                    </button>
+                    <button class="transport-option" data-transport="camel" onclick="selectTransport('camel')">
+                        <span class="transport-icon-large">🐪</span>
+                        <strong>Camel</strong>
+                        <small>Perfect for desert</small>
+                    </button>
+                    <button class="transport-option" data-transport="ship" onclick="selectTransport('ship')">
+                        <span class="transport-icon-large">🚢</span>
+                        <strong>Ship/Boat</strong>
+                        <small>For water travel</small>
+                    </button>
+                    <button class="transport-option" data-transport="plane" onclick="selectTransport('plane')">
+                        <span class="transport-icon-large">✈️</span>
+                        <strong>Airplane</strong>
+                        <small>Fastest for far places</small>
+                    </button>
+                    <button class="transport-option" data-transport="horse" onclick="selectTransport('horse')">
+                        <span class="transport-icon-large">🐎</span>
+                        <strong>Horse</strong>
+                        <small>Traditional transport</small>
+                    </button>
+                </div>
+            </div>
+
+            <div class="result-area hidden" id="taskResult">
+                <div class="result-content" id="resultContent"></div>
+                <button class="continue-btn" id="continueBtn" onclick="backToCustomerSelection()">✅ Help Next
+                    Customer</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentCustomer = null;
+        let score = 0;
+        let helpedCustomers = new Set();
+
+        const customerData = {
+            teddy: {
+                name: "Teddy Bear",
+                emoji: "🧸",
+                destination: "nearby park",
+                request: "I want to visit the nearby park to play!",
+                correctAnswers: ["walk", "bicycle"],
+                feedback: "Perfect choice! For short distances like going to a nearby park, walking or cycling is healthy and saves energy! 🌱"
+            },
+            doll: {
+                name: "Emma Doll",
+                emoji: "👧",
+                destination: "next city",
+                request: "I need to visit grandma in the next city!",
+                correctAnswers: ["car", "train"],
+                feedback: "Excellent! For traveling to another city, cars, buses, or trains are the best options. Trains are the fastest land transport! 🚂"
+            },
+            lion: {
+                name: "Leo Lion",
+                emoji: "🦁",
+                destination: "desert",
+                request: "I want to explore the desert!",
+                correctAnswers: ["camel"],
+                feedback: "Amazing choice! Camels are perfect for desert travel - just like the ones you saw in Qatar! They can survive without much water. 🐪",
+                qatarStory: true
+            },
+            penguin: {
+                name: "Penny Penguin",
+                emoji: "🐧",
+                destination: "across the ocean",
+                request: "I need to cross the ocean to visit my friends!",
+                correctAnswers: ["ship"],
+                feedback: "Great thinking! For crossing oceans, rivers, or lakes, we need boats or ships. They're made for water travel! ⛵"
+            },
+            monkey: {
+                name: "Max Monkey",
+                emoji: "🐵",
+                destination: "faraway country",
+                request: "I want to visit a faraway country!",
+                correctAnswers: ["plane"],
+                feedback: "Perfect! For faraway countries, airplanes are the fastest way - just like when you flew to Qatar! ✈️",
+                qatarStory: true
+            }
+        };
+
+        // Navigation Functions
+        function showCustomerSelection() {
+            hideAllPages();
+            document.getElementById('customerSelectionPage').classList.remove('hidden');
+            updateProgress();
+            checkAllCompleted();
+        }
+
+        function selectCustomer(customerId) {
+            if (helpedCustomers.has(customerId)) {
+                showAlreadyHelpedMessage(customerId);
+                return;
+            }
+
+            currentCustomer = customerId;
+            const customer = customerData[customerId];
+
+            document.getElementById('currentCustomerEmoji').textContent = customer.emoji;
+            document.getElementById('currentCustomerName').textContent = customer.name;
+            document.getElementById('currentCustomerRequest').textContent = customer.request;
+
+            document.querySelectorAll('.transport-option').forEach(btn => {
+                btn.classList.remove('selected', 'correct', 'incorrect');
+                btn.disabled = false;
+            });
+
+            document.getElementById('taskResult').classList.add('hidden');
+
+            hideAllPages();
+            document.getElementById('customerTaskPage').classList.remove('hidden');
+        }
+
+        function selectTransport(transport) {
+            const customer = customerData[currentCustomer];
+            const isCorrect = customer.correctAnswers.includes(transport);
+
+            document.querySelectorAll('.transport-option').forEach(btn => {
+                btn.disabled = true;
+            });
+
+            const selectedBtn = document.querySelector(`[data-transport="${transport}"]`);
+            selectedBtn.classList.add('selected');
+
+            setTimeout(() => {
+                document.querySelectorAll('.transport-option').forEach(btn => {
+                    const btnTransport = btn.dataset.transport;
+                    if (customer.correctAnswers.includes(btnTransport)) {
+                        btn.classList.add('correct');
+                    } else if (btnTransport === transport && !isCorrect) {
+                        btn.classList.add('incorrect');
+                    }
+                });
+
+                setTimeout(() => {
+                    showResult(isCorrect, customer, transport);
+                }, 1000);
+            }, 500);
+
+            if (isCorrect) {
+                playSuccessSound();
+                createConfetti();
+            } else {
+                playErrorSound();
+            }
+        }
+
+        function showResult(isCorrect, customer, selectedTransport) {
+            let resultHTML = '';
+
+            if (isCorrect) {
+                score++;
+                helpedCustomers.add(currentCustomer);
+
+                resultHTML += `
+                    <div class="boarding-pass">
+                        <h3>🎫 TICKET</h3>
+                        <p><strong>${customer.name}</strong></p>
+                        <p>Destination: ${customer.destination}</p>
+                        <p>Transport: ${selectedTransport.toUpperCase()}</p>
+                        <p>Status: ✅ APPROVED</p>
+                    </div>
+                `;
+
+                const feedbackClass = customer.qatarStory ? 'feedback qatar-story' : 'feedback';
+                resultHTML += `<div class="${feedbackClass}">${customer.feedback}</div>`;
+
+                if (customer.qatarStory) {
+                    resultHTML += `
+                        <div class="feedback qatar-story">
+                            <strong>🏜️ Your Qatar Memory:</strong><br>
+                            Remember when you traveled to Qatar? You saw real camels in the desert and flew in an airplane! You're a travel expert! 🌟
+                        </div>
+                    `;
+                }
+
+                document.getElementById(`status-${currentCustomer}`).textContent = '✅ Helped!';
+                document.getElementById(`status-${currentCustomer}`).classList.add('helped');
+                document.querySelector(`[data-customer="${currentCustomer}"]`).classList.add('completed');
+
+                document.getElementById('continueBtn').textContent = '✅ Help Next Customer';
+                document.getElementById('continueBtn').onclick = backToCustomerSelection;
+
+            } else {
+                resultHTML += `
+                    <div class="feedback" style="background: #FFE8E8; border-color: #FF6B6B; color: #D32F2F;">
+                        <strong>Try again!</strong><br>
+                        Think about the distance and where ${customer.name} wants to go. What would be the best way to travel there? 🤔
+                    </div>
+                `;
+
+                document.getElementById('continueBtn').textContent = '🔄 Try Again';
+                document.getElementById('continueBtn').onclick = () => selectCustomer(currentCustomer);
+            }
+
+            document.getElementById('resultContent').innerHTML = resultHTML;
+            document.getElementById('taskResult').classList.remove('hidden');
+        }
+
+        function showAlreadyHelpedMessage(customerId) {
+            const customer = customerData[customerId];
+            alert(`You already helped ${customer.name}! Great job! 🌟\n\nChoose another customer to help.`);
+        }
+
+        function backToCustomerSelection() {
+            showCustomerSelection();
+        }
+
+        function hideAllPages() {
+            document.getElementById('welcomePage').classList.add('hidden');
+            document.getElementById('customerSelectionPage').classList.add('hidden');
+            document.getElementById('customerTaskPage').classList.add('hidden');
+        }
+
+        function updateProgress() {
+            document.getElementById('helpedCount').textContent = helpedCustomers.size;
+            document.getElementById('totalScore').textContent = score;
+        }
+
+        function checkAllCompleted() {
+            if (helpedCustomers.size === 5) {
+                document.getElementById('allCompletedSection').classList.remove('hidden');
+                triggerBigCelebration();
+            }
+        }
+
+        function restartGame() {
+            currentCustomer = null;
+            score = 0;
+            helpedCustomers.clear();
+
+            document.querySelectorAll('.customer-status').forEach(status => {
+                status.textContent = 'Ready to help!';
+                status.classList.remove('helped');
+            });
+
+            document.querySelectorAll('.customer-card-large').forEach(card => {
+                card.classList.remove('completed');
+            });
+
+            document.getElementById('allCompletedSection').classList.add('hidden');
+
+            hideAllPages();
+            document.getElementById('welcomePage').classList.remove('hidden');
+        }
+
+        function triggerBigCelebration() {
+            playVictoryFanfare();
+            createConfetti();
+            setTimeout(createConfetti, 1000);
+            setTimeout(createConfetti, 2000);
+        }
+
+        function createConfetti() {
+            const overlay = document.createElement('div');
+            overlay.style.position = 'fixed';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.width = '100%';
+            overlay.style.height = '100%';
+            overlay.style.pointerEvents = 'none';
+            overlay.style.zIndex = '1000';
+            document.body.appendChild(overlay);
+
+            const colors = ['#FF6B9D', '#4ECDC4', '#FFD93D', '#6BCF7F', '#9B59B6', '#FF9500'];
+
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.style.position = 'absolute';
+                    confetti.style.width = '12px';
+                    confetti.style.height = '12px';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.animation = 'confettiFall 3s linear forwards';
+                    overlay.appendChild(confetti);
+                }, i * 50);
+            }
+
+            setTimeout(() => {
+                if (document.body.contains(overlay)) {
+                    document.body.removeChild(overlay);
+                }
+            }, 5000);
+
+            // Add confetti animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes confettiFall {
+                    0% { transform: translateY(-100vh) rotate(0deg) scale(1); opacity: 1; }
+                    100% { transform: translateY(100vh) rotate(720deg) scale(0); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        function playSuccessSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const notes = [523.25, 659.25, 783.99];
+
+                notes.forEach((freq, index) => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+
+                    oscillator.frequency.setValueAtTime(freq, audioContext.currentTime + index * 0.1);
+                    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime + index * 0.1);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + index * 0.1 + 0.5);
+
+                    oscillator.start(audioContext.currentTime + index * 0.1);
+                    oscillator.stop(audioContext.currentTime + index * 0.1 + 0.5);
+                });
+            } catch (e) {
+                console.log('Audio not supported');
+            }
+        }
+
+        function playErrorSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+
+                oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.3);
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.3);
+            } catch (e) {
+                console.log('Audio not supported');
+            }
+        }
+
+        function playVictoryFanfare() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const fanfare = [
+                    { freq: 523.25, time: 0.0, duration: 0.4 },
+                    { freq: 659.25, time: 0.4, duration: 0.4 },
+                    { freq: 783.99, time: 0.8, duration: 0.4 },
+                    { freq: 1046.50, time: 1.2, duration: 0.8 }
+                ];
+
+                fanfare.forEach(note => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+
+                    oscillator.frequency.setValueAtTime(note.freq, audioContext.currentTime + note.time);
+                    gainNode.gain.setValueAtTime(0.25, audioContext.currentTime + note.time);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + note.time + note.duration);
+
+                    oscillator.start(audioContext.currentTime + note.time);
+                    oscillator.stop(audioContext.currentTime + note.time + note.duration);
+                });
+            } catch (e) {
+                console.log('Audio not supported');
+            }
+        }
+
+        // Initialize
+        window.addEventListener('load', () => {
+            hideAllPages();
+            document.getElementById('welcomePage').classList.remove('hidden');
+        });
+    </script>
+</body>
+
+</html>
