@@ -15,18 +15,104 @@
   </header>
 
   <main>
-    <ul>
-      <li><a href="11-transport-communication/index.html">01 — Living vs Nonliving</a></li>
-      <li><a href="02-TBD/index.html">02 — Animal Habitats</a></li>
-      <li><a href="03-TBD/index.html">03 — Plant Parts</a></li>
-      <li><a href="04-TBD/index.html">04 — Weather Patterns</a></li>
-      <li><a href="05-TBD/index.html">05 — Solar System</a></li>
-    </ul>
-  </main>
+    <main>
+      <section class="hero">
+        <h2>Explore the World! 🌍</h2>
+        <p>Discover the wonders of science!</p>
 
-  <footer>
-    <script src="../assets/js/main.js"></script>
-  </footer>
+        <div class="subject-grid">
+          <!-- Active Chapter -->
+          <a href="11-transport-communication/index.html" class="subject-card science">
+            <div class="icon">🚂</div>
+            <h3>Transport</h3>
+            <p>Transport & Communication</p>
+          </a>
+
+          <!-- Placeholders -->
+          <div class="subject-card science locked">
+            <div class="icon">🔒</div>
+            <h3>Chapter 2</h3>
+            <p>Coming Soon</p>
+          </div>
+          <div class="subject-card science locked">
+            <div class="icon">🔒</div>
+            <h3>Chapter 3</h3>
+            <p>Coming Soon</p>
+          </div>
+          <div class="subject-card science locked">
+            <div class="icon">🔒</div>
+            <h3>Chapter 4</h3>
+            <p>Coming Soon</p>
+          </div>
+          <div class="subject-card science locked">
+            <div class="icon">🔒</div>
+            <h3>Chapter 5</h3>
+            <p>Coming Soon</p>
+          </div>
+          <div class="subject-card science locked">
+            <div class="icon">🔒</div>
+            <h3>Chapter 6</h3>
+            <p>Coming Soon</p>
+          </div>
+          <div class="subject-card science locked">
+            <div class="icon">🔒</div>
+            <h3>Chapter 7</h3>
+            <p>Coming Soon</p>
+          </div>
+          <div class="subject-card science locked">
+            <div class="icon">🔒</div>
+            <h3>Chapter 8</h3>
+            <p>Coming Soon</p>
+          </div>
+          <div class="subject-card science locked">
+            <div class="icon">🔒</div>
+            <h3>Chapter 9</h3>
+            <p>Coming Soon</p>
+          </div>
+          <div class="subject-card science locked">
+            <div class="icon">🔒</div>
+            <h3>Chapter 10</h3>
+            <p>Coming Soon</p>
+          </div>
+          <div class="subject-card science locked">
+            <div class="icon">🔒</div>
+            <h3>Chapter 11</h3>
+            <p>Coming Soon</p>
+          </div>
+          <div class="subject-card science locked">
+            <div class="icon">🔒</div>
+            <h3>Chapter 12</h3>
+            <p>Coming Soon</p>
+          </div>
+        </div>
+      </section>
+
+      <style>
+        /* Local styles for locked cards */
+        .subject-card.locked {
+          opacity: 0.6;
+          cursor: not-allowed;
+          filter: grayscale(0.8);
+          background-color: #dfe6e9;
+          /* Light grey override */
+          color: #636e72;
+          border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .subject-card.locked:hover {
+          transform: none;
+          box-shadow: var(--shadow-pop);
+        }
+
+        .subject-card.locked .icon {
+          background: rgba(0, 0, 0, 0.05);
+        }
+      </style>
+    </main>
+
+    <footer>
+      <script src="../assets/js/main.js"></script>
+    </footer>
 </body>
 
 </html>
