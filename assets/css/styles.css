@@ -193,6 +193,14 @@ main {
   color: var(--color-science-fg);
 }
 
+/* Disabled State */
+.subject-card.disabled {
+  opacity: 0.5;
+  filter: grayscale(100%);
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
 /* Footer */
 footer {
   text-align: center;
