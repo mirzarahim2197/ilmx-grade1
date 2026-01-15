@@ -107,6 +107,31 @@
         .subject-card.locked .icon {
           background: rgba(0, 0, 0, 0.05);
         }
+
+        /* Mobile-specific styles for science index */
+        @media (max-width: 768px) {
+          .subject-grid {
+            gap: 1rem;
+          }
+
+          .subject-card {
+            padding: 1.25rem 1rem;
+          }
+
+          .subject-card h3 {
+            font-size: 1.5rem;
+          }
+
+          .subject-card p {
+            font-size: 1rem;
+          }
+
+          .subject-card .icon {
+            width: 60px;
+            height: 60px;
+            font-size: 2.5rem;
+          }
+        }
       </style>
     </main>
 
