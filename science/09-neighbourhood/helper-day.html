@@ -52,6 +52,12 @@
             position: relative;
         }
 
+        /* Left-justified header variant used on choice and scenario screens */
+        .game-header.left {
+            text-align: left;
+            padding-left: 24px;
+        }
+
         .game-header h1 {
             font-size: 1.8em;
             font-weight: 700;
@@ -104,6 +110,11 @@
         .welcome-content {
             text-align: center;
             padding: 20px 0;
+        }
+
+        /* People selection screen: left-align the main welcome block to act like a choice page */
+        .screen#peopleScreen .welcome-content {
+            text-align: left;
         }
 
         .welcome-icon {
@@ -332,6 +343,11 @@
             padding: 20px 0;
         }
 
+        /* Scenario screen: left-align header and situation to be easier to read */
+        .screen#scenarioScreen .scenario-content {
+            text-align: left;
+        }
+
         .scenario-header {
             margin-bottom: 20px;
         }
@@ -343,7 +359,8 @@
             border-radius: 20px;
             font-size: 1em;
             font-weight: 600;
-            display: inline-block;
+            /* hidden: remove the Problem X of Y label from scenario pages */
+            display: none !important;
             margin-bottom: 15px;
         }
 
@@ -1223,6 +1240,15 @@
             const homeBtn = document.querySelector('.home-btn');
             if (homeBtn) {
                 homeBtn.style.display = screenId === 'welcomeScreen' ? 'none' : 'inline-block';
+            }
+            // Left-justify the main header on people and scenario screens for easier reading
+            const headerEl = document.querySelector('.game-header');
+            if (headerEl) {
+                if (screenId === 'peopleScreen' || screenId === 'scenarioScreen') {
+                    headerEl.classList.add('left');
+                } else {
+                    headerEl.classList.remove('left');
+                }
             }
         }
 
