@@ -190,6 +190,60 @@
             margin-bottom: 20px;
         }
 
+        /* People selection */
+        .people-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .person-card {
+            background: var(--white);
+            border: 3px solid var(--bg-light);
+            border-radius: 12px;
+            padding: 14px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .person-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+
+        .person-card.selected {
+            border-color: var(--primary-green);
+            box-shadow: 0 8px 20px rgba(39,174,96,0.12);
+            background: rgba(39,174,96,0.05);
+            transform: translateY(-4px);
+        }
+
+        .person-card.helped {
+            border-color: var(--success-green);
+            box-shadow: 0 6px 18px rgba(39,174,96,0.08);
+            background: rgba(39,174,96,0.07);
+            opacity: 0.95;
+        }
+
+        .person-emoji { font-size: 2.2em; margin-bottom: 8px; }
+
+        /* Progress bar for people helped */
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: linear-gradient(90deg, rgba(0,0,0,0.04), rgba(0,0,0,0.02));
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.04);
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary-green), var(--primary-blue));
+            transition: width 400ms ease;
+        }
+
+
         .mission-card {
             background: var(--white);
             border: 3px solid var(--bg-light);
@@ -465,18 +519,9 @@
             }
         }
 
+        /* celebration-burst disabled: hidden to remove yellow circle effect */
         .celebration-burst {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,215,0,0.8) 0%, transparent 70%);
-            animation: celebrationBurst 0.8s ease-out;
-            pointer-events: none;
-            z-index: 9998;
+            display: none !important;
         }
 
         @keyframes celebrationBurst {
@@ -761,18 +806,36 @@
             <!-- Welcome Screen -->
             <div class="screen active" id="welcomeScreen">
                 <div class="welcome-content">
-                    <div class="welcome-icon">🤔💡</div>
-                    <div class="welcome-title">Think and Choose!</div>
-                    <div class="welcome-subtitle">Help solve neighbourhood problems by choosing the right place to go</div>
+                    <div class="welcome-icon">🦸‍♀️🦸‍♂️✨</div>
+                    <div class="welcome-title">Help 5 People — Save the Day!</div>
                     
                     <div class="mission-brief">
                         <h3>🧠 How to Play:</h3>
-                        <p>You'll face different situations that need solving. Read each problem carefully and think: "Which place in our neighbourhood can help with this?"</p>
-                        <p style="margin-top: 15px;">Choose wisely! Some places might seem right, but only one place is the BEST choice for each problem.</p>
-                        <p style="margin-top: 15px;"><strong>Use your knowledge to help solve 10 different neighbourhood challenges! 🏆</strong></p>
+                        <p>Your mission: Choose someone to help, solve their problem.</p>
+                        <p style="margin-top: 15px;">Read each situation carefully and think: "Which place in our neighbourhood can help with this?"</p>
+                        <p style="margin-top: 15px;"><strong>Choose 5 people to help, then solve their problems to win! 🏆</strong></p>
                     </div>
 
-                    <button class="start-mission-btn" onclick="startMission()">🚀 Start Mission!</button>
+                    <button class="start-mission-btn" onclick="startMission()">🚀 Start Helping</button>
+                </div>
+            </div>
+
+            <!-- People Selection Screen -->
+            <div class="screen" id="peopleScreen">
+                <div class="welcome-content">
+                    
+
+                    <div class="mission-brief" style="margin-top:18px;">
+                        <h3>🙂 Choose next person to help </h3>
+                    </div>
+
+                    <div class="missions-grid people-grid" id="peopleGrid" style="padding:10px 0;">
+                        <!-- People cards populated by JS -->
+                    </div>
+
+                    <div style="margin-top:12px;">
+                        <button class="back-btn" onclick="goHome()">🏠 Cancel</button>
+                    </div>
                 </div>
             </div>
 
@@ -780,11 +843,13 @@
             <div class="screen" id="scenarioScreen">
                 <div class="scenario-content">
                     <div class="scenario-header">
-                        <div class="scenario-number" id="scenarioNumber">Problem 1 of 6</div>
-                        <div class="scenario-icon" id="scenarioIcon">👵😷</div>
-                    </div>
-                    
-                    <div class="scenario-title" id="scenarioTitle">Oh No! Grandma is Sick</div>
+                            <div class="scenario-number" id="scenarioNumber">Problem 1 of 6</div>
+                            <div class="scenario-icon" id="scenarioIcon">👵😷</div>
+                        </div>
+
+                        <div class="helper-line" id="scenarioHelper" style="font-weight:700; margin:8px 0 6px 0; color:var(--text-dark);"></div>
+
+                        <div class="scenario-title" id="scenarioTitle">Oh No! Grandma is Sick</div>
                     
                     <div class="scenario-situation">
                         <p id="scenarioSituation">Grandma called this morning. She has a high fever and is feeling very weak. She says she needs some medicine but can't leave her house.</p>
@@ -811,8 +876,9 @@
                     </div>
 
                     <div style="margin-top: 30px;">
-                        <button class="complete-btn" onclick="nextScenario()">➡️ Next Problem</button>
-                        <button class="back-btn" onclick="goBackToScenario()" style="display: none;">← Try Again</button>
+                        <button class="complete-btn" id="feedbackNext" onclick="nextScenario()">➡️ Next Problem</button>
+                        <button class="back-btn" id="feedbackTryAgain" onclick="goBackToScenario()" style="display: none;">← Try Again</button>
+                        <button class="back-btn" id="feedbackBackToPeople" onclick="nextScenario()" style="display: none;">⬅️ Back to People</button>
                     </div>
                 </div>
             </div>
@@ -829,9 +895,8 @@
                     <div class="achievements">
                         <h3 style="margin-bottom: 15px; color: var(--text-dark);">🌟 What You Accomplished:</h3>
                         <ul class="achievement-list">
-                            <li>🧠 Used critical thinking to analyze 10 different problems</li>
+                            <li>🧠 Used critical thinking to analyze different problems</li>
                             <li>🏘️ Applied your knowledge about neighbourhood places</li>
-                            <li>🤝 Learned when to seek help from community helpers</li>
                             <li>💡 Made smart decisions by thinking before choosing</li>
                             <li>🏆 Became a Neighbourhood Problem-Solving Champion!</li>
                         </ul>
@@ -1137,16 +1202,29 @@
             }
         ];
 
+        // People that the player can choose to help (10 choices)
+        const people = [
+            { id: 'grandma', name: 'Grandma', emoji: '👵', desc: 'A kind grandma who needs help' },
+            { id: 'dad', name: 'Dad', emoji: '👨', desc: 'Dad who looks after the family' },
+            { id: 'puppy', name: 'Lost Puppy', emoji: '🐶', desc: 'A small lost puppy' },
+            { id: 'friend_ara', name: 'Azra', emoji: '🧒', desc: 'Azra (friend)' },
+            { id: 'friend_raj', name: 'Zain', emoji: '👦', desc: 'Zain (friend)' },
+            { id: 'mom', name: 'Mom', emoji: '👩', desc: 'Mom who cooks for everyone' },
+            { id: 'teacher', name: 'Teacher', emoji: '👩‍🏫', desc: 'Your helpful teacher' },
+            { id: 'neighbor', name: 'Neighbor', emoji: '🧑‍🦳', desc: 'A friendly neighbour' },
+            { id: 'aunt', name: 'Aunt', emoji: '👩‍🦰', desc: 'Aunt who visits often' },
+            { id: 'brother', name: 'Brother', emoji: '👦🏻', desc: 'Your younger brother' }
+        ];
+
         let selectedScenarios = [];
         let currentScenarioIndex = 0;
         let completedScenarios = 0;
         let currentScenario = null;
 
-        function selectRandomScenarios() {
-            // Shuffle the scenario pool
+        function selectRandomScenarios(count) {
+            // Shuffle the scenario pool and take `count` scenarios
             const shuffled = [...scenarioPool].sort(() => Math.random() - 0.5);
-            // Take first 10 scenarios
-            selectedScenarios = shuffled.slice(0, 10);
+            selectedScenarios = shuffled.slice(0, count);
             // Reset completion status
             selectedScenarios.forEach(scenario => scenario.completed = false);
         }
@@ -1155,52 +1233,213 @@
             document.querySelectorAll('.screen').forEach(screen => {
                 screen.classList.remove('active');
             });
-            document.getElementById(screenId).classList.add('active');
+            const el = document.getElementById(screenId);
+            if (el) {
+                el.classList.add('active');
+            }
+            // Hide the header Home button only on the welcome screen
+            const homeBtn = document.querySelector('.home-btn');
+            if (homeBtn) {
+                homeBtn.style.display = screenId === 'welcomeScreen' ? 'none' : 'inline-block';
+            }
         }
 
         function updateProgress() {
-            completedScenarios = selectedScenarios.filter(s => s.completed).length;
-            document.getElementById('progressInfo').textContent = `${completedScenarios} problems solved • ${10 - completedScenarios} remaining`;
+            helpedCount = people.filter(p => p.helped).length;
+            document.getElementById('progressInfo').textContent = `${helpedCount} helped • ${MAX_HELPERS - helpedCount} remaining`;
+            const el = document.getElementById('peoplePickInfo');
+            if (el) el.textContent = `Helped: ${helpedCount} of ${MAX_HELPERS}`;
+            const fill = document.getElementById('peopleProgressFill');
+            if (fill) {
+                const pct = Math.round((helpedCount / MAX_HELPERS) * 100);
+                fill.style.width = pct + '%';
+                fill.setAttribute('aria-valuenow', pct);
+            }
         }
 
+        
+
+        // Begin the flow by showing the people selection screen
+        const MAX_HELPERS = 5;
+        let helpedCount = 0;
+        let usedScenarioIds = new Set();
+
         function startMission() {
-            selectRandomScenarios(); // Select 10 random scenarios
-            currentScenarioIndex = 0;
+            // Reset people helped state and UI
+            people.forEach(p => p.helped = false);
+            helpedCount = 0;
+            usedScenarioIds = new Set();
+            selectedScenarios = [];
+            renderPeopleGrid();
+            updateProgress();
+            showScreen('peopleScreen');
+            document.getElementById('headerTitle').textContent = '🧡 Help People';
+        }
+
+        function renderPeopleGrid() {
+            const grid = document.getElementById('peopleGrid');
+            grid.innerHTML = '';
+            people.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'person-card' + (p.helped ? ' helped' : '');
+                card.id = 'person-' + p.id;
+                card.setAttribute('role', 'button');
+                card.setAttribute('tabindex', '0');
+
+                // Short role labels for a compact display (no multi-line description)
+                const roleMap = {
+                    grandma: 'grandma', dad: 'dad', mom: 'mom', puppy: 'puppy',
+                    friend_ara: 'friend', friend_raj: 'friend', teacher: 'teacher',
+                    neighbor: 'neighbor', aunt: 'aunt', brother: 'brother'
+                };
+                const role = roleMap[p.id] || '';
+                let titleText = p.name || '';
+                if (role && !titleText.toLowerCase().includes(role)) {
+                    titleText = `${titleText} (${role})`;
+                }
+
+                card.innerHTML = `
+                    <div class="person-emoji">${p.emoji}</div>
+                    <div class="mission-title">${titleText}</div>
+                `;
+                card.addEventListener('click', () => choosePerson(p.id));
+                // keyboard support
+                card.addEventListener('keydown', (ev) => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); choosePerson(p.id); } });
+                if (p.helped) {
+                    const done = document.createElement('div');
+                    done.style.marginTop = '8px';
+                    done.style.fontSize = '0.95em';
+                    done.style.color = 'var(--success-green)';
+                    done.textContent = '✅ Helped';
+                    card.appendChild(done);
+                }
+                grid.appendChild(card);
+            });
+            // add event delegation as a fallback if direct listeners fail
+            const container = document.getElementById('peopleGrid');
+            if (container && !container._delegationAttached) {
+                container.addEventListener('click', (e) => {
+                    const el = e.target.closest && e.target.closest('.person-card');
+                    if (el && el.id && el.id.startsWith('person-')) {
+                        const pid = el.id.replace('person-', '');
+                        choosePerson(pid);
+                    }
+                });
+                container._delegationAttached = true;
+            }
+        }
+
+        // Choose a single person to help now; use a hard-coded deterministic mapping (simple and predictable)
+        function choosePerson(personId) {
+            const person = people.find(p => p.id === personId);
+            if (!person || person.helped) return; // already helped or invalid
+
+            // Hard-coded mapping: primary preferred scenario ids per person (first choice)
+            const hardMap = {
+                grandma: [1, 17],
+                dad: [9, 30],
+                mom: [10, 19],
+                puppy: [25],
+                friend_ara: [2, 13, 29],
+                friend_raj: [2, 13, 29],
+                teacher: [13, 15],
+                neighbor: [11, 4, 22],
+                aunt: [16, 17],
+                brother: [3, 14]
+            };
+
+            const preferred = hardMap[person.id] || [];
+
+            // 1) pick the first preferred id that's still unused
+            let scenario = null;
+            for (const id of preferred) {
+                // allow selecting the preferred id even if previously used (deterministic mapping)
+                const s = scenarioPool.find(sc => sc.id === id);
+                if (s) { scenario = s; break; }
+            }
+
+            // 2) if none available, fallback to any unused scenario that shares the same category
+            if (!scenario) {
+                const categoryMap = {
+                    grandma: ['hospital'], dad: ['bank'], mom: ['market','hospital'], puppy: ['police','park'],
+                    friend_ara: ['school','park'], friend_raj: ['school','park'], teacher: ['school'],
+                    neighbor: ['police','park'], aunt: ['post','market'], brother: ['school','market']
+                };
+                const cats = categoryMap[person.id] || [];
+                if (cats.length > 0) {
+                    scenario = scenarioPool.find(s => !usedScenarioIds.has(s.id) && cats.includes(s.correctChoice));
+                }
+            }
+
+            // 3) final fallback: any unused scenario
+            if (!scenario) {
+                const any = scenarioPool.filter(s => !usedScenarioIds.has(s.id));
+                if (any.length > 0) scenario = any[0];
+            }
+
+            if (!scenario) {
+                alert('No more scenarios available.');
+                return;
+            }
+
+            // clone the scenario so we don't mutate the shared pool when attaching person info
+            const chosen = Object.assign({}, scenario);
+            usedScenarioIds.add(chosen.id);
+            chosen.person = person;
+            chosen.originalTitle = chosen.title;
+            selectedScenarios.push(chosen);
+            currentScenarioIndex = selectedScenarios.length - 1;
             showScenario();
             showScreen('scenarioScreen');
-            document.getElementById('headerTitle').textContent = '🧠 Think & Choose';
-            
-            // Add a little celebration when starting!
+            const header = document.getElementById('headerTitle');
+            if (header) header.textContent = '🧠 Think & Choose';
             setTimeout(createCelebrationBurst, 200);
         }
 
         function showScenario() {
-            currentScenario = selectedScenarios[currentScenarioIndex];
-            
-            document.getElementById('scenarioNumber').textContent = `Problem ${currentScenarioIndex + 1} of 10`;
-            document.getElementById('scenarioIcon').textContent = currentScenario.image;
-            document.getElementById('scenarioTitle').textContent = currentScenario.title;
-            document.getElementById('scenarioSituation').textContent = currentScenario.situation;
-            
-            renderChoices();
-            updateProgress();
+            try {
+                currentScenario = selectedScenarios[currentScenarioIndex];
+                if (!currentScenario) {
+                    return;
+                }
+                const numEl = document.getElementById('scenarioNumber');
+                const iconEl = document.getElementById('scenarioIcon');
+                const titleEl = document.getElementById('scenarioTitle');
+                const sitEl = document.getElementById('scenarioSituation');
+                const helperEl = document.getElementById('scenarioHelper');
+                if (numEl) numEl.textContent = `Problem ${currentScenarioIndex + 1} of ${selectedScenarios.length}`;
+                if (iconEl) iconEl.textContent = currentScenario.image;
+                if (titleEl) titleEl.textContent = currentScenario.originalTitle || currentScenario.title;
+                if (helperEl) helperEl.textContent = currentScenario.person ? `Helping: ${currentScenario.person.name}` : '';
+                if (sitEl) sitEl.textContent = currentScenario.situation;
+
+                renderChoices();
+                updateProgress();
+            } catch (err) {
+                console.error('showScenario error', err);
+            }
         }
 
         function renderChoices() {
             const container = document.getElementById('choicesGrid');
-            container.innerHTML = '';
-
-            currentScenario.choices.forEach(choice => {
-                const choiceDiv = document.createElement('div');
-                choiceDiv.className = 'choice-option';
-                choiceDiv.innerHTML = `
-                    <div class="choice-icon">${choice.icon}</div>
-                    <div class="choice-name">${choice.name}</div>
-                `;
-                
-                choiceDiv.addEventListener('click', () => makeChoice(choice));
-                container.appendChild(choiceDiv);
-            });
+            try {
+                container.innerHTML = '';
+                if (!currentScenario || !currentScenario.choices) {
+                    return;
+                }
+                currentScenario.choices.forEach(choice => {
+                    const choiceDiv = document.createElement('div');
+                    choiceDiv.className = 'choice-option';
+                    choiceDiv.innerHTML = `
+                        <div class="choice-icon">${choice.icon}</div>
+                        <div class="choice-name">${choice.name}</div>
+                    `;
+                    choiceDiv.addEventListener('click', () => makeChoice(choice));
+                    container.appendChild(choiceDiv);
+                });
+            } catch (err) {
+                console.error('renderChoices error', err);
+            }
         }
 
         function makeChoice(selectedChoice) {
@@ -1239,6 +1478,12 @@
                 feedbackTitle.textContent = 'Perfect Choice!';
                 feedbackTitle.className = 'feedback-title correct';
                 currentScenario.completed = true;
+                // mark the person as helped
+                if (currentScenario.person) {
+                    currentScenario.person.helped = true;
+                }
+                helpedCount = people.filter(p => p.helped).length;
+                updateProgress();
                 
                 // Trigger celebration effects for correct answer!
                 setTimeout(celebrateCorrectAnswer, 100);
@@ -1250,29 +1495,36 @@
             
             feedbackMessage.textContent = selectedChoice.feedback;
             
-            // Hide/show appropriate buttons
-            const tryAgainBtn = document.querySelector('.back-btn');
-            const nextBtn = document.querySelector('.complete-btn');
-            
-            if (isCorrect) {
-                tryAgainBtn.style.display = 'none';
-                nextBtn.style.display = 'inline-block';
-                nextBtn.textContent = currentScenarioIndex === 9 ? '🏆 See Results' : '➡️ Next Problem';
-            } else {
-                tryAgainBtn.style.display = 'inline-block';
-                nextBtn.style.display = 'none';
-            }
-            
-            showScreen('feedbackScreen');
+                // Hide/show appropriate buttons using explicit IDs so we don't pick up other buttons
+                const tryAgainBtn = document.getElementById('feedbackTryAgain');
+                const nextBtn = document.getElementById('feedbackNext');
+                const backToPeopleBtn = document.getElementById('feedbackBackToPeople');
+
+                if (isCorrect) {
+                    if (tryAgainBtn) tryAgainBtn.style.display = 'none';
+                    if (backToPeopleBtn) backToPeopleBtn.style.display = 'none';
+                    if (nextBtn) {
+                        nextBtn.style.display = 'inline-block';
+                        nextBtn.textContent = helpedCount >= MAX_HELPERS ? '🏆 See Results' : '➡️ Back to People';
+                    }
+                } else {
+                    if (tryAgainBtn) tryAgainBtn.style.display = 'inline-block';
+                    if (backToPeopleBtn) backToPeopleBtn.style.display = 'inline-block';
+                    if (nextBtn) nextBtn.style.display = 'none';
+                }
+
+                showScreen('feedbackScreen');
         }
 
         function nextScenario() {
-            currentScenarioIndex++;
-            if (currentScenarioIndex >= selectedScenarios.length) {
+            // After helping a person, check progress. Return to people list until MAX_HELPERS reached.
+            if (helpedCount >= MAX_HELPERS) {
                 showCompletionScreen();
             } else {
-                showScenario();
-                showScreen('scenarioScreen');
+                // show people list so kid can pick next person
+                renderPeopleGrid();
+                showScreen('peopleScreen');
+                document.getElementById('headerTitle').textContent = '🧡 Help People';
             }
         }
 
@@ -1288,7 +1540,7 @@
         function showCompletionScreen() {
             const solvedCount = selectedScenarios.filter(s => s.completed).length;
             document.getElementById('headerTitle').textContent = '🎉 Well Done!';
-            document.getElementById('progressInfo').textContent = `You solved ${solvedCount} out of 10 problems!`;
+            document.getElementById('progressInfo').textContent = `You helped ${solvedCount} out of ${selectedScenarios.length} people!`;
             showScreen('completionScreen');
             
             // Trigger big celebration effects for game completion!
@@ -1375,16 +1627,9 @@
             }
         }
 
+        // Celebration burst disabled to remove yellow circle animation
         function createCelebrationBurst() {
-            const burst = document.createElement('div');
-            burst.className = 'celebration-burst';
-            document.body.appendChild(burst);
-
-            setTimeout(() => {
-                if (burst.parentNode) {
-                    burst.parentNode.removeChild(burst);
-                }
-            }, 800);
+            return; // no-op
         }
 
         function celebrateCorrectAnswer() {
