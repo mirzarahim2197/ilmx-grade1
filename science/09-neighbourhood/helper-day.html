@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏘️ Neighbourhood Helper Day</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-green: #2ECC71;
+            --primary-blue: #3498DB;
+            --primary-orange: #E67E22;
+            --primary-red: #E74C3C;
+            --primary-purple: #9B59B6;
+            --success-green: #27AE60;
+            --warning-yellow: #F39C12;
+            --text-dark: #2C3E50;
+            --text-light: #7F8C8D;
+            --bg-light: #ECF0F1;
+            --white: #FFFFFF;
+            --shadow: 0 4px 15px rgba(0,0,0,0.1);
+            --shadow-hover: 0 6px 25px rgba(0,0,0,0.15);
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .game-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--white);
+            min-height: 100vh;
+            box-shadow: var(--shadow);
+        }
+
+        .game-header {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-blue) 100%);
+            color: var(--white);
+            text-align: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .game-header h1 {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .progress-info {
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        .home-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            color: var(--white);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .home-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .game-content {
+            padding: 20px;
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Welcome Screen */
+        .welcome-content {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .welcome-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .welcome-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+        }
+
+        .welcome-subtitle {
+            font-size: 1.1em;
+            color: var(--text-light);
+            margin-bottom: 30px;
+        }
+
+        .mission-brief {
+            background: rgba(52, 152, 219, 0.1);
+            border-left: 4px solid var(--primary-blue);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .mission-brief h3 {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            color: var(--primary-blue);
+        }
+
+        .start-mission-btn {
+            background: linear-gradient(135deg, var(--primary-green), var(--success-green));
+            color: var(--white);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 1.2em;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .start-mission-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Mission Screen */
+        .checklist-header {
+            background: var(--bg-light);
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .checklist-title {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .progress-badge {
+            background: var(--primary-blue);
+            color: var(--white);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .missions-grid {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .mission-card {
+            background: var(--white);
+            border: 3px solid var(--bg-light);
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .mission-card:hover {
+            border-color: var(--primary-blue);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .mission-card:not(.completed) {
+            border-color: var(--primary-blue);
+            box-shadow: 0 3px 12px rgba(52, 152, 219, 0.15);
+        }
+
+        .mission-card:not(.completed):hover {
+            border-color: var(--primary-green);
+            box-shadow: 0 5px 20px rgba(52, 152, 219, 0.25);
+            transform: translateY(-3px);
+        }
+
+        .mission-card.completed {
+            border-color: #BDC3C7;
+            background: rgba(236, 240, 241, 0.5);
+            opacity: 0.6;
+            transform: scale(0.95);
+        }
+
+        .mission-card.completed .mission-icon {
+            opacity: 0.5;
+        }
+
+        .mission-card.completed .mission-title,
+        .mission-card.completed .mission-desc {
+            color: var(--text-light);
+            opacity: 0.7;
+        }
+
+        .mission-card.completed:hover {
+            border-color: #BDC3C7;
+            transform: scale(0.95);
+            box-shadow: none;
+            cursor: default;
+        }
+
+        .mission-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .mission-title {
+            font-size: 1.1em;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .mission-desc {
+            font-size: 0.95em;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+
+        .mission-status {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5em;
+        }
+
+        .mission-card.completed .mission-status {
+            font-size: 1.2em;
+            opacity: 0.6;
+        }
+
+        /* Scenario Screen */
+        .scenario-content {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .scenario-header {
+            margin-bottom: 20px;
+        }
+
+        .scenario-number {
+            background: var(--primary-blue);
+            color: var(--white);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 1em;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .scenario-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+
+        .scenario-title {
+            font-size: 1.6em;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+
+        .scenario-situation {
+            background: rgba(52, 152, 219, 0.1);
+            border-left: 4px solid var(--primary-blue);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .scenario-situation p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+
+        .scenario-question {
+            margin: 30px 0 20px 0;
+            color: var(--primary-green);
+        }
+
+        .scenario-question h3 {
+            font-size: 1.3em;
+            font-weight: 700;
+        }
+
+        .choices-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .choice-option {
+            background: var(--white);
+            border: 3px solid var(--bg-light);
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .choice-option:hover {
+            border-color: var(--primary-blue);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .choice-option.correct {
+            border-color: var(--success-green);
+            background: rgba(39, 174, 96, 0.1);
+        }
+
+        .choice-option.wrong {
+            border-color: var(--primary-red);
+            background: rgba(231, 76, 60, 0.1);
+        }
+
+        .choice-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .choice-name {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        /* Feedback Screen */
+        .feedback-content {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .feedback-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .feedback-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .feedback-title.correct {
+            color: var(--success-green);
+        }
+
+        .feedback-title.wrong {
+            color: var(--primary-red);
+        }
+
+        /* Celebration Effects */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            overflow: hidden;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: confettiFall linear infinite;
+        }
+
+        .confetti:nth-child(1) { background: #ff6b6b; animation-delay: 0s; animation-duration: 3s; left: 10%; }
+        .confetti:nth-child(2) { background: #4ecdc4; animation-delay: 0.2s; animation-duration: 2.8s; left: 20%; }
+        .confetti:nth-child(3) { background: #45b7d1; animation-delay: 0.4s; animation-duration: 3.2s; left: 30%; }
+        .confetti:nth-child(4) { background: #96ceb4; animation-delay: 0.6s; animation-duration: 2.5s; left: 40%; }
+        .confetti:nth-child(5) { background: #ffeaa7; animation-delay: 0.8s; animation-duration: 3.5s; left: 50%; }
+        .confetti:nth-child(6) { background: #a29bfe; animation-delay: 1s; animation-duration: 2.7s; left: 60%; }
+        .confetti:nth-child(7) { background: #fd79a8; animation-delay: 1.2s; animation-duration: 3.1s; left: 70%; }
+        .confetti:nth-child(8) { background: #ff9f43; animation-delay: 1.4s; animation-duration: 2.9s; left: 80%; }
+        .confetti:nth-child(9) { background: #7bed9f; animation-delay: 1.6s; animation-duration: 3.3s; left: 90%; }
+        .confetti:nth-child(10) { background: #70a1ff; animation-delay: 1.8s; animation-duration: 2.6s; left: 15%; }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #ffd700;
+            border-radius: 50%;
+            animation: sparkle 1s ease-out;
+        }
+
+        @keyframes sparkle {
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2) rotate(180deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(0) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .celebration-burst {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,215,0,0.8) 0%, transparent 70%);
+            animation: celebrationBurst 0.8s ease-out;
+            pointer-events: none;
+            z-index: 9998;
+        }
+
+        @keyframes celebrationBurst {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 1;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.5);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(3);
+                opacity: 0;
+            }
+        }
+
+        .bounce-celebration {
+            animation: bounceInUp 0.8s ease-out;
+        }
+
+        @keyframes bounceInUp {
+            0% {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            60% {
+                transform: translateY(-30px);
+                opacity: 1;
+            }
+            80% {
+                transform: translateY(10px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        .pulse-glow {
+            animation: pulseGlow 0.6s ease-in-out;
+        }
+
+        @keyframes pulseGlow {
+            0% {
+                box-shadow: 0 0 5px rgba(39, 174, 96, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 25px rgba(39, 174, 96, 0.8), 0 0 35px rgba(39, 174, 96, 0.6);
+            }
+            100% {
+                box-shadow: 0 0 5px rgba(39, 174, 96, 0.5);
+            }
+        }
+
+        .feedback-message {
+            background: var(--bg-light);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+
+        /* Location Screen */
+        .location-content {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .location-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+        }
+
+        .location-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+        }
+
+        .location-info {
+            background: var(--bg-light);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .helper-info {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 15px;
+            background: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .helper-avatar {
+            font-size: 2.5em;
+            margin-right: 15px;
+        }
+
+        .helper-text {
+            flex: 1;
+        }
+
+        .helper-name {
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+        }
+
+        .helper-message {
+            color: var(--text-light);
+            font-size: 0.95em;
+        }
+
+        .complete-btn {
+            background: var(--success-green);
+            color: var(--white);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .complete-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .back-btn {
+            background: var(--text-light);
+            color: var(--white);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .back-btn:hover {
+            background: var(--text-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Completion Screen */
+        .completion-content {
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .celebration-icon {
+            font-size: 6em;
+            margin-bottom: 20px;
+        }
+
+        .completion-title {
+            font-size: 2em;
+            font-weight: 700;
+            color: var(--success-green);
+            margin-bottom: 15px;
+        }
+
+        .completion-message {
+            font-size: 1.2em;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .achievements {
+            background: var(--bg-light);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .achievement-list {
+            list-style: none;
+            text-align: left;
+        }
+
+        .achievement-list li {
+            padding: 8px 0;
+            font-size: 1.1em;
+            color: var(--text-dark);
+        }
+
+        .restart-btn {
+            background: var(--primary-blue);
+            color: var(--white);
+            border: none;
+            padding: 15px 35px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 600px) {
+            .game-header {
+                padding: 15px;
+            }
+
+            .game-header h1 {
+                font-size: 1.5em;
+            }
+
+            .home-btn {
+                top: 15px;
+                right: 15px;
+                padding: 6px 12px;
+                font-size: 0.8em;
+            }
+
+            .game-content {
+                padding: 15px;
+            }
+
+            .choices-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .choice-option {
+                padding: 15px;
+            }
+
+            .scenario-icon {
+                font-size: 3em;
+            }
+
+            .scenario-title {
+                font-size: 1.4em;
+            }
+
+            .feedback-icon {
+                font-size: 3em;
+            }
+
+            .completion-title {
+                font-size: 1.6em;
+            }
+
+            .celebration-icon {
+                font-size: 4.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <button class="home-btn" onclick="goHome()">🏠 Home</button>
+            <h1 id="headerTitle">🏘️ Neighbourhood Helper Day</h1>
+            <div class="progress-info" id="progressInfo">Ready to help our community!</div>
+        </div>
+
+        <div class="game-content">
+            <!-- Welcome Screen -->
+            <div class="screen active" id="welcomeScreen">
+                <div class="welcome-content">
+                    <div class="welcome-icon">🤔💡</div>
+                    <div class="welcome-title">Think and Choose!</div>
+                    <div class="welcome-subtitle">Help solve neighbourhood problems by choosing the right place to go</div>
+                    
+                    <div class="mission-brief">
+                        <h3>🧠 How to Play:</h3>
+                        <p>You'll face different situations that need solving. Read each problem carefully and think: "Which place in our neighbourhood can help with this?"</p>
+                        <p style="margin-top: 15px;">Choose wisely! Some places might seem right, but only one place is the BEST choice for each problem.</p>
+                        <p style="margin-top: 15px;"><strong>Use your knowledge to help solve 10 different neighbourhood challenges! 🏆</strong></p>
+                    </div>
+
+                    <button class="start-mission-btn" onclick="startMission()">🚀 Start Mission!</button>
+                </div>
+            </div>
+
+            <!-- Scenario Screen -->
+            <div class="screen" id="scenarioScreen">
+                <div class="scenario-content">
+                    <div class="scenario-header">
+                        <div class="scenario-number" id="scenarioNumber">Problem 1 of 6</div>
+                        <div class="scenario-icon" id="scenarioIcon">👵😷</div>
+                    </div>
+                    
+                    <div class="scenario-title" id="scenarioTitle">Oh No! Grandma is Sick</div>
+                    
+                    <div class="scenario-situation">
+                        <p id="scenarioSituation">Grandma called this morning. She has a high fever and is feeling very weak. She says she needs some medicine but can't leave her house.</p>
+                    </div>
+                    
+                    <div class="scenario-question">
+                        <h3>🤔 Where should we go to help solve this problem?</h3>
+                    </div>
+                    
+                    <div class="choices-grid" id="choicesGrid">
+                        <!-- Choice buttons will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feedback Screen -->
+            <div class="screen" id="feedbackScreen">
+                <div class="feedback-content">
+                    <div class="feedback-icon" id="feedbackIcon">✅</div>
+                    <div class="feedback-title" id="feedbackTitle">Great Choice!</div>
+                    
+                    <div class="feedback-message">
+                        <p id="feedbackMessage">Perfect! Hospitals have medicine and doctors who can help sick people like Grandma.</p>
+                    </div>
+
+                    <div style="margin-top: 30px;">
+                        <button class="complete-btn" onclick="nextScenario()">➡️ Next Problem</button>
+                        <button class="back-btn" onclick="goBackToScenario()" style="display: none;">← Try Again</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Completion Screen -->
+            <div class="screen" id="completionScreen">
+                <div class="completion-content">
+                    <div class="celebration-icon">🎉🏆🎉</div>
+                    <div class="completion-title">Mission Complete!</div>
+                    <div class="completion-message">
+                        Excellent problem-solving! You used your knowledge about our neighbourhood to help solve real situations that families face every day!
+                    </div>
+                    
+                    <div class="achievements">
+                        <h3 style="margin-bottom: 15px; color: var(--text-dark);">🌟 What You Accomplished:</h3>
+                        <ul class="achievement-list">
+                            <li>🧠 Used critical thinking to analyze 10 different problems</li>
+                            <li>🏘️ Applied your knowledge about neighbourhood places</li>
+                            <li>🤝 Learned when to seek help from community helpers</li>
+                            <li>💡 Made smart decisions by thinking before choosing</li>
+                            <li>🏆 Became a Neighbourhood Problem-Solving Champion!</li>
+                        </ul>
+                    </div>
+
+                    <div style="margin-top: 30px;">
+                        <button class="restart-btn" onclick="restartMission()">🔄 Play Again</button>
+                        <button class="back-btn" onclick="goHome()">🏠 Back to Home</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const scenarioPool = [
+            // Hospital/Medical scenarios
+            {
+                id: 1, title: "Oh No! Grandma is Sick", situation: "Grandma called this morning. She has a high fever and is feeling very weak. She says she needs some medicine but can't leave her house.", image: "👵😷", problem: "Grandma needs help getting medicine", correctChoice: 'hospital',
+                choices: [
+                    { id: 'hospital', icon: '🏥', name: 'Hospital', feedback: 'Perfect! Hospitals have medicine and doctors who can help sick people like Grandma.' },
+                    { id: 'bank', icon: '🏛️', name: 'Bank', feedback: 'Banks keep money safe, but they don\'t have medicine for sick people.' },
+                    { id: 'police', icon: '👮‍♂️', name: 'Police Station', feedback: 'Police help with safety, but doctors at the hospital help with sickness.' },
+                    { id: 'school', icon: '🏫', name: 'School', feedback: 'Schools are for learning, but hospitals are where we get medicine.' }
+                ], completed: false
+            },
+            {
+                id: 2, title: "Playground Accident!", situation: "Your friend fell off the swing and hurt their arm badly. They're crying and can't move their arm. They need medical help right away!", image: "🤕💔", problem: "Friend hurt their arm and needs medical help", correctChoice: 'hospital',
+                choices: [
+                    { id: 'hospital', icon: '🏥', name: 'Hospital', feedback: 'Excellent! When someone is hurt, doctors at the hospital can help them feel better.' },
+                    { id: 'school', icon: '🏫', name: 'School', feedback: 'Schools help with learning, but hurt people need medical care from hospitals.' },
+                    { id: 'park', icon: '🌳', name: 'Park', feedback: 'Parks are for playing, but injured people need doctors and nurses.' },
+                    { id: 'market', icon: '🛒', name: 'Market', feedback: 'Markets sell food, but hospitals take care of hurt people.' }
+                ], completed: false
+            },
+            {
+                id: 3, title: "Baby Brother's Fever", situation: "Your baby brother has been crying all night. Mom checked and he has a high temperature. Mom is worried and wants to get him checked by a doctor immediately.", image: "👶🌡️", problem: "Baby needs to see a doctor for fever", correctChoice: 'hospital',
+                choices: [
+                    { id: 'hospital', icon: '🏥', name: 'Hospital', feedback: 'Right choice! Doctors at hospitals know how to help sick babies get better.' },
+                    { id: 'market', icon: '🛒', name: 'Market', feedback: 'Markets have food, but sick babies need doctors, not groceries.' },
+                    { id: 'post', icon: '📮', name: 'Post Office', feedback: 'Post offices send letters, but babies need medical care from doctors.' },
+                    { id: 'bank', icon: '🏛️', name: 'Bank', feedback: 'Banks handle money, but sick babies need hospitals for treatment.' }
+                ], completed: false
+            },
+
+            // Police Station scenarios
+            {
+                id: 4, title: "A Lost Wallet!", situation: "While walking in the park, you found a wallet on the ground. It has money and ID cards inside. The owner must be very worried!", image: "👛😟", problem: "Someone lost their wallet with money and important cards", correctChoice: 'police',
+                choices: [
+                    { id: 'police', icon: '👮‍♂️', name: 'Police Station', feedback: 'Excellent choice! Police help find owners of lost things and keep them safe.' },
+                    { id: 'hospital', icon: '🏥', name: 'Hospital', feedback: 'Hospitals help sick people, but police help with lost items.' },
+                    { id: 'school', icon: '🏫', name: 'School', feedback: 'Schools are for learning, but police stations handle lost property.' },
+                    { id: 'market', icon: '🛒', name: 'Market', feedback: 'Markets sell things, but police help return lost items to owners.' }
+                ], completed: false
+            },
+            {
+                id: 5, title: "Scary Stranger", situation: "A strange man is following you on your way home from school. He keeps asking you to come with him. You feel scared and unsafe.", image: "😨🚶‍♂️", problem: "A stranger is bothering you and you feel unsafe", correctChoice: 'police',
+                choices: [
+                    { id: 'police', icon: '👮‍♂️', name: 'Police Station', feedback: 'Perfect! Police officers keep us safe from dangerous people and bad situations.' },
+                    { id: 'market', icon: '🛒', name: 'Market', feedback: 'Markets are busy places, but police are specially trained to keep us safe.' },
+                    { id: 'park', icon: '🌳', name: 'Park', feedback: 'Parks might have people, but police stations are where we go for safety help.' },
+                    { id: 'hospital', icon: '🏥', name: 'Hospital', feedback: 'Hospitals help hurt people, but police protect us from dangerous people.' }
+                ], completed: false
+            },
+            {
+                id: 6, title: "Stolen Bicycle", situation: "Someone took your bicycle from outside the school! You locked it properly, but now it's gone. You want to report this theft.", image: "🚲😢", problem: "Your bicycle was stolen and needs to be reported", correctChoice: 'police',
+                choices: [
+                    { id: 'police', icon: '👮‍♂️', name: 'Police Station', feedback: 'Great thinking! Police help when things are stolen and work to catch thieves.' },
+                    { id: 'school', icon: '🏫', name: 'School', feedback: 'Schools help with learning, but police handle theft and crime reports.' },
+                    { id: 'hospital', icon: '🏥', name: 'Hospital', feedback: 'Hospitals treat sick people, but police deal with stolen items.' },
+                    { id: 'post', icon: '📮', name: 'Post Office', feedback: 'Post offices deliver mail, but police stations handle crime reports.' }
+                ], completed: false
+            },
+
+            // Bank scenarios
+            {
+                id: 7, title: "Birthday Money to Save", situation: "It's your birthday! Grandpa gave you ₹500 as a gift. Mom says it's a lot of money and you should keep it safe so you can buy something special later.", image: "🎂💰", problem: "You need to keep your birthday money safe", correctChoice: 'bank',
+                choices: [
+                    { id: 'bank', icon: '🏛️', name: 'Bank', feedback: 'Smart thinking! Banks keep money safe and secure until you need it.' },
+                    { id: 'market', icon: '🛒', name: 'Market', feedback: 'Markets are for buying things, but banks keep money safe.' },
+                    { id: 'park', icon: '🌳', name: 'Park', feedback: 'Parks are for playing, but banks are the safest place for money.' },
+                    { id: 'post', icon: '📮', name: 'Post Office', feedback: 'Post offices send letters, but banks keep money secure.' }
+                ], completed: false
+            },
+            {
+                id: 8, title: "Piggy Bank Full!", situation: "Your piggy bank is completely full of coins! Mom says it's too heavy and too much money to keep at home. You want to keep it somewhere very safe.", image: "🐷💰", problem: "Too much money at home, need a safer place", correctChoice: 'bank',
+                choices: [
+                    { id: 'bank', icon: '🏛️', name: 'Bank', feedback: 'Excellent! Banks are the safest places to keep money when you have a lot.' },
+                    { id: 'school', icon: '🏫', name: 'School', feedback: 'Schools are for learning, but banks are made to keep money safe.' },
+                    { id: 'market', icon: '🛒', name: 'Market', feedback: 'Markets use money, but banks store and protect money safely.' },
+                    { id: 'park', icon: '🌳', name: 'Park', feedback: 'Parks are for fun, but money needs the security that banks provide.' }
+                ], completed: false
+            },
+            {
+                id: 9, title: "ATM Card Missing", situation: "Dad lost his ATM card somewhere in the house! He needs to get some cash to buy groceries, but he can't find his card anywhere.", image: "💳❓", problem: "Need cash but lost ATM card", correctChoice: 'bank',
+                choices: [
+                    { id: 'bank', icon: '🏛️', name: 'Bank', feedback: 'Perfect! Banks can give you money even without your ATM card, and help with lost cards.' },
+                    { id: 'market', icon: '🛒', name: 'Market', feedback: 'Markets need money to buy things, but banks can help when your card is lost.' },
+                    { id: 'police', icon: '👮‍♂️', name: 'Police Station', feedback: 'Police help with serious lost items, but banks handle lost ATM cards.' },
+                    { id: 'hospital', icon: '🏥', name: 'Hospital', feedback: 'Hospitals help sick people, but banks solve money and card problems.' }
+                ], completed: false
+            },
+
+            // Fire Station scenarios
+            {
+                id: 10, title: "Kitchen Emergency!", situation: "Mom was cooking when the kitchen towel caught fire! There's smoke everywhere and a small fire on the counter. Everyone is safe outside, but we need help fast!", image: "🔥😰", problem: "There's a fire in the kitchen that needs to be put out", correctChoice: 'fire',
+                choices: [
+                    { id: 'fire', icon: '🚒', name: 'Fire Station', feedback: 'Perfect! Firefighters are trained to put out fires safely. Call 101!' },
+                    { id: 'police', icon: '👮‍♂️', name: 'Police Station', feedback: 'Police help with many problems, but firefighters are specially trained for fires.' },
+                    { id: 'hospital', icon: '🏥', name: 'Hospital', feedback: 'Hospitals help hurt people, but firefighters put out fires.' },
+                    { id: 'market', icon: '🛒', name: 'Market', feedback: 'This is an emergency! We need firefighters to put out the fire.' }
+                ], completed: false
+            },
+            {
+                id: 11, title: "Cat Stuck in Tree", situation: "Your neighbor's cat climbed up a very tall tree and now can't get down. It's been crying for hours and looks scared. The tree is too high for anyone to climb.", image: "🐱🌳", problem: "Cat stuck high in tree and can't get down", correctChoice: 'fire',
+                choices: [
+                    { id: 'fire', icon: '🚒', name: 'Fire Station', feedback: 'Great choice! Firefighters often help rescue animals stuck in high places.' },
+                    { id: 'park', icon: '🌳', name: 'Park', feedback: 'Parks have trees, but firefighters have special ladders to reach high places.' },
+                    { id: 'hospital', icon: '🏥', name: 'Hospital', feedback: 'Hospitals help hurt animals, but first we need to rescue the cat safely.' },
+                    { id: 'police', icon: '👮‍♂️', name: 'Police Station', feedback: 'Police help with many things, but firefighters specialize in high rescues.' }
+                ], completed: false
+            },
+            {
+                id: 12, title: "Smoke from Building", situation: "You see thick black smoke coming from the apartment building next door. People are running out of the building looking worried and scared.", image: "🏢💨", problem: "Building with smoke - possible fire emergency", correctChoice: 'fire',
+                choices: [
+                    { id: 'fire', icon: '🚒', name: 'Fire Station', feedback: 'Absolutely right! Smoke usually means fire - firefighters need to check and help immediately!' },
+                    { id: 'hospital', icon: '🏥', name: 'Hospital', feedback: 'Hospitals help hurt people, but first firefighters need to handle the smoke and fire.' },
+                    { id: 'police', icon: '👮‍♂️', name: 'Police Station', feedback: 'Police help keep order, but firefighters are experts at handling smoke and fires.' },
+                    { id: 'school', icon: '🏫', name: 'School', feedback: 'This is a fire emergency! Firefighters are trained for exactly these situations.' }
+                ], completed: false
+            },
+
+            // School scenarios
+            {
+                id: 13, title: "Learning New Things", situation: "Summer holidays are over and it's time to go back to learning! You need to submit your holiday homework and meet your new teacher for this year.", image: "📚👩‍🏫", problem: "You need to submit homework and meet your teacher", correctChoice: 'school',
+                choices: [
+                    { id: 'school', icon: '🏫', name: 'School', feedback: 'Absolutely right! Schools are where we learn and meet our teachers.' },
+                    { id: 'park', icon: '🌳', name: 'Park', feedback: 'Parks are fun for playing, but schools are for learning and homework.' },
+                    { id: 'market', icon: '🛒', name: 'Market', feedback: 'Markets sell things, but teachers work at schools.' },
+                    { id: 'post', icon: '📮', name: 'Post Office', feedback: 'Post offices handle mail, but homework goes to teachers at school.' }
+                ], completed: false
+            },
+            {
+                id: 14, title: "Forgot My Lunchbox", situation: "You're at home after school and realize you left your lunchbox in your classroom! It has your favorite water bottle inside and you need it for tomorrow.", image: "🍱😅", problem: "Left lunchbox in classroom and need to get it", correctChoice: 'school',
+                choices: [
+                    { id: 'school', icon: '🏫', name: 'School', feedback: 'Perfect! Your lunchbox is in your classroom, so school is where you need to go.' },
+                    { id: 'market', icon: '🛒', name: 'Market', feedback: 'Markets sell lunchboxes, but yours is specifically at your school.' },
+                    { id: 'park', icon: '🌳', name: 'Park', feedback: 'Parks are for playing, but your lunchbox is at school in your classroom.' },
+                    { id: 'hospital', icon: '🏥', name: 'Hospital', feedback: 'Hospitals help sick people, but your lunchbox is waiting for you at school.' }
+                ], completed: false
+            },
+            {
+                id: 15, title: "Library Book Due", situation: "You borrowed a storybook from your school library two weeks ago. The librarian said you need to return it today or you'll get in trouble.", image: "📖⏰", problem: "Need to return library book to avoid getting in trouble", correctChoice: 'school',
+                choices: [
+                    { id: 'school', icon: '🏫', name: 'School', feedback: 'Excellent! School libraries are part of schools, so you return books there.' },
+                    { id: 'post', icon: '📮', name: 'Post Office', feedback: 'Post offices handle mail, but school library books stay at school.' },
+                    { id: 'market', icon: '🛒', name: 'Market', feedback: 'Markets sell new books, but borrowed books must go back to the school library.' },
+                    { id: 'bank', icon: '🏛️', name: 'Bank', feedback: 'Banks handle money, but school books belong back at school.' }
+                ], completed: false
+            },
+
+            // Post Office scenarios
+            {
+                id: 16, title: "A Letter for Cousin", situation: "Your cousin moved to another city and you miss them a lot. You drew a beautiful picture and wrote a letter. Now you want to send it so your cousin gets it safely.", image: "✉️💌", problem: "You want to send a letter to your cousin in another city", correctChoice: 'post',
+                choices: [
+                    { id: 'post', icon: '📮', name: 'Post Office', feedback: 'Great choice! Post offices help send letters and packages to people far away.' },
+                    { id: 'school', icon: '🏫', name: 'School', feedback: 'Schools are for learning, but post offices send mail to other cities.' },
+                    { id: 'bank', icon: '🏛️', name: 'Bank', feedback: 'Banks keep money safe, but post offices deliver letters.' },
+                    { id: 'park', icon: '🌳', name: 'Park', feedback: 'Parks are for playing, but we need postal workers to send letters.' }
+                ], completed: false
+            },
+            {
+                id: 17, title: "Grandma's Birthday Gift", situation: "It's Grandma's birthday next week, but she lives in a different state! You bought her a beautiful scarf and want to send it as a surprise gift.", image: "🎁👵", problem: "Need to send birthday gift to grandma in another state", correctChoice: 'post',
+                choices: [
+                    { id: 'post', icon: '📮', name: 'Post Office', feedback: 'Perfect! Post offices send packages and gifts to people in other cities and states.' },
+                    { id: 'market', icon: '🛒', name: 'Market', feedback: 'Markets sell gifts, but post offices send them to faraway places.' },
+                    { id: 'bank', icon: '🏛️', name: 'Bank', feedback: 'Banks handle money, but post offices handle sending packages.' },
+                    { id: 'hospital', icon: '🏥', name: 'Hospital', feedback: 'Hospitals help sick people, but post offices deliver gifts to other states.' }
+                ], completed: false
+            },
+            {
+                id: 18, title: "Important Documents", situation: "Dad needs to send his job application documents to a company in Mumbai. The papers are very important and must reach there safely and quickly.", image: "📄✈️", problem: "Need to send important documents to another city safely", correctChoice: 'post',
+                choices: [
+                    { id: 'post', icon: '📮', name: 'Post Office', feedback: 'Excellent! Post offices safely deliver important documents to other cities.' },
+                    { id: 'bank', icon: '🏛️', name: 'Bank', feedback: 'Banks keep documents safe, but post offices send them to other cities.' },
+                    { id: 'school', icon: '🏫', name: 'School', feedback: 'Schools handle student documents, but post offices send mail everywhere.' },
+                    { id: 'police', icon: '👮‍♂️', name: 'Police Station', feedback: 'Police keep things safe, but post offices specialize in delivering mail.' }
+                ], completed: false
+            },
+
+            // Market scenarios
+            {
+                id: 19, title: "Empty Refrigerator", situation: "Mom opened the refrigerator and it's almost empty! We need vegetables, fruits, milk, and bread for the family. There's no food left for dinner tonight.", image: "❄️🥕", problem: "No food at home, need to buy groceries for dinner", correctChoice: 'market',
+                choices: [
+                    { id: 'market', icon: '🛒', name: 'Market', feedback: 'Perfect choice! Markets have all the fresh food and groceries families need.' },
+                    { id: 'hospital', icon: '🏥', name: 'Hospital', feedback: 'Hospitals help sick people, but markets are where we buy food.' },
+                    { id: 'school', icon: '🏫', name: 'School', feedback: 'Schools have cafeterias, but markets sell groceries for home cooking.' },
+                    { id: 'bank', icon: '🏛️', name: 'Bank', feedback: 'Banks handle money, but we need to shop at markets for food.' }
+                ], completed: false
+            },
+            {
+                id: 20, title: "Birthday Cake Ingredients", situation: "Tomorrow is Dad's surprise birthday! You want to bake him a special cake, but you need flour, eggs, sugar, and chocolate to make it.", image: "🎂🛍️", problem: "Need ingredients to bake a birthday cake", correctChoice: 'market',
+                choices: [
+                    { id: 'market', icon: '🛒', name: 'Market', feedback: 'Great thinking! Markets sell all the ingredients needed for baking cakes.' },
+                    { id: 'hospital', icon: '🏥', name: 'Hospital', feedback: 'Hospitals help sick people, but markets sell baking ingredients.' },
+                    { id: 'school', icon: '🏫', name: 'School', feedback: 'Schools teach cooking, but markets are where we buy ingredients.' },
+                    { id: 'post', icon: '📮', name: 'Post Office', feedback: 'Post offices send mail, but baking supplies come from markets.' }
+                ], completed: false
+            },
+            {
+                id: 21, title: "School Snack Missing", situation: "You forgot to pack your snack for school today! Your tummy is rumbling and you have 2 hours left before lunch. You need something healthy to eat.", image: "🍎😋", problem: "Hungry at school and need to buy a healthy snack", correctChoice: 'market',
+                choices: [
+                    { id: 'market', icon: '🛒', name: 'Market', feedback: 'Smart choice! Markets near schools sell healthy snacks like fruits and nuts.' },
+                    { id: 'school', icon: '🏫', name: 'School', feedback: 'Schools have cafeterias, but markets sell individual snacks you can buy.' },
+                    { id: 'hospital', icon: '🏥', name: 'Hospital', feedback: 'Hospitals help sick people, but markets sell food when you\'re hungry.' },
+                    { id: 'park', icon: '🌳', name: 'Park', feedback: 'Parks are for playing, but markets are where we buy snacks.' }
+                ], completed: false
+            },
+
+            // Park/Environment scenarios
+            {
+                id: 22, title: "Messy Playground", situation: "The park playground is full of plastic bottles and chip packets that people left behind. It looks ugly and might hurt the animals that live there.", image: "🗑️🏞️", problem: "Park is messy with litter and needs cleaning", correctChoice: 'park',
+                choices: [
+                    { id: 'park', icon: '🌳', name: 'Park', feedback: 'Perfect! Parks need our care - we should clean them and put trash in dustbins.' },
+                    { id: 'market', icon: '🛒', name: 'Market', feedback: 'Markets sell cleaning supplies, but the actual cleaning needs to happen at the park.' },
+                    { id: 'hospital', icon: '🏥', name: 'Hospital', feedback: 'Hospitals help sick people, but dirty parks need direct cleaning action.' },
+                    { id: 'school', icon: '🏫', name: 'School', feedback: 'Schools teach about cleanliness, but the park itself needs our help.' }
+                ], completed: false
+            },
+            {
+                id: 23, title: "No Place to Play", situation: "All the kids in your area love to play, but there's nowhere safe to run around. The streets are too dangerous and there are only buildings everywhere.", image: "🏃‍♀️❌", problem: "Need a safe place for children to play", correctChoice: 'park',
+                choices: [
+                    { id: 'park', icon: '🌳', name: 'Park', feedback: 'Excellent thinking! Parks provide safe, open spaces where children can play freely.' },
+                    { id: 'school', icon: '🏫', name: 'School', feedback: 'Schools have playgrounds, but public parks are open for everyone anytime.' },
+                    { id: 'hospital', icon: '🏥', name: 'Hospital', feedback: 'Hospitals help hurt people, but parks provide safe playing spaces.' },
+                    { id: 'market', icon: '🛒', name: 'Market', feedback: 'Markets are busy places, but parks are designed for safe play.' }
+                ], completed: false
+            },
+            {
+                id: 24, title: "Earth Day Project", situation: "Your teacher gave everyone a special assignment for Earth Day: plant something green to help the environment and make your community more beautiful.", image: "🌱🌍", problem: "Need to plant something for Earth Day project", correctChoice: 'park',
+                choices: [
+                    { id: 'park', icon: '🌳', name: 'Park', feedback: 'Great choice! Parks are perfect places to plant trees and flowers for the environment.' },
+                    { id: 'school', icon: '🏫', name: 'School', feedback: 'Schools support Earth Day, but parks provide the best space for planting.' },
+                    { id: 'market', icon: '🛒', name: 'Market', feedback: 'Markets sell plants, but parks are where we plant them to help nature.' },
+                    { id: 'hospital', icon: '🏥', name: 'Hospital', feedback: 'Hospitals help people, but parks are where we help the environment by planting.' }
+                ], completed: false
+            },
+
+            // Mixed/Complex scenarios
+            {
+                id: 25, title: "Lost Puppy Emergency", situation: "A small puppy is wandering around the busy road looking scared and lost. It doesn't have a collar and might get hit by a car!", image: "🐶😢", problem: "Lost puppy in danger on busy road", correctChoice: 'police',
+                choices: [
+                    { id: 'police', icon: '👮‍♂️', name: 'Police Station', feedback: 'Good thinking! Police help with lost animals and keep them safe until owners are found.' },
+                    { id: 'hospital', icon: '🏥', name: 'Hospital', feedback: 'Hospitals help hurt animals, but police help find owners of lost pets.' },
+                    { id: 'park', icon: '🌳', name: 'Park', feedback: 'Parks have space for animals, but police have systems to reunite lost pets with families.' },
+                    { id: 'school', icon: '🏫', name: 'School', feedback: 'Schools teach about caring for animals, but police handle lost pet situations.' }
+                ], completed: false
+            },
+            {
+                id: 26, title: "Medicine for Sick Plant", situation: "The beautiful flower plant in your garden is looking very sick with yellow leaves and drooping stems. You want to get something to help it grow healthy again.", image: "🌸😷", problem: "Garden plant is sick and needs treatment", correctChoice: 'market',
+                choices: [
+                    { id: 'market', icon: '🛒', name: 'Market', feedback: 'Smart choice! Markets sell plant medicine, fertilizers, and gardening supplies.' },
+                    { id: 'hospital', icon: '🏥', name: 'Hospital', feedback: 'Hospitals help sick people and animals, but plant medicine comes from markets.' },
+                    { id: 'park', icon: '🌳', name: 'Park', feedback: 'Parks have healthy plants, but markets sell the supplies to help your plant.' },
+                    { id: 'school', icon: '🏫', name: 'School', feedback: 'Schools teach about plants, but markets sell plant care products.' }
+                ], completed: false
+            },
+            {
+                id: 27, title: "Torn School Uniform", situation: "Your school uniform shirt got a big tear during recess play. Tomorrow is school and you need it fixed properly so you look neat and tidy.", image: "👕✂️", problem: "School uniform torn and needs repair", correctChoice: 'tailor',
+                choices: [
+                    { id: 'tailor', icon: '🧵', name: 'Tailor Shop', feedback: 'Perfect! Tailors are experts at fixing and mending torn clothes.' },
+                    { id: 'market', icon: '🛒', name: 'Market', feedback: 'Markets sell new clothes, but tailors specialize in repairing torn ones.' },
+                    { id: 'school', icon: '🏫', name: 'School', feedback: 'Schools require neat uniforms, but tailors fix clothing problems.' },
+                    { id: 'hospital', icon: '🏥', name: 'Hospital', feedback: 'Hospitals help hurt people, but tailors help hurt clothes!' }
+                ], completed: false
+            },
+            {
+                id: 28, title: "Broken Chair Emergency", situation: "Dad's favorite chair broke! One leg came off and now it wobbles dangerously. He needs someone who knows how to fix wooden furniture properly.", image: "🪑🔨", problem: "Wooden chair broken and needs expert repair", correctChoice: 'carpenter',
+                choices: [
+                    { id: 'carpenter', icon: '🔨', name: 'Carpenter Shop', feedback: 'Excellent! Carpenters are wood experts who can fix broken furniture perfectly.' },
+                    { id: 'market', icon: '🛒', name: 'Market', feedback: 'Markets sell new furniture, but carpenters repair broken wooden items.' },
+                    { id: 'hospital', icon: '🏥', name: 'Hospital', feedback: 'Hospitals fix hurt people, but carpenters fix hurt furniture!' },
+                    { id: 'school', icon: '🏫', name: 'School', feedback: 'Schools have chairs, but carpenters are the furniture-fixing experts.' }
+                ], completed: false
+            },
+            {
+                id: 29, title: "Class Party Shopping", situation: "Your class is having a celebration party tomorrow! The teacher asked everyone to bring some snacks, drinks, and paper plates to share with classmates.", image: "🎉🥤", problem: "Need party supplies for class celebration", correctChoice: 'market',
+                choices: [
+                    { id: 'market', icon: '🛒', name: 'Market', feedback: 'Perfect choice! Markets have all party supplies - snacks, drinks, plates, and decorations.' },
+                    { id: 'school', icon: '🏫', name: 'School', feedback: 'The party is at school, but markets are where we buy the party supplies.' },
+                    { id: 'park', icon: '🌳', name: 'Park', feedback: 'Parks are great for parties, but markets sell the supplies you need.' },
+                    { id: 'post', icon: '📮', name: 'Post Office', feedback: 'Post offices send things, but party supplies come from markets.' }
+                ], completed: false
+            },
+            {
+                id: 30, title: "Grandpa's Pension Money", situation: "Grandpa receives his monthly pension money from the government. He wants to keep it somewhere very safe and also be able to take out small amounts when needed.", image: "👴💵", problem: "Need safe place to keep pension money with easy access", correctChoice: 'bank',
+                choices: [
+                    { id: 'bank', icon: '🏛️', name: 'Bank', feedback: 'Excellent choice! Banks safely store money and let you take out exactly what you need anytime.' },
+                    { id: 'market', icon: '🛒', name: 'Market', feedback: 'Markets use money, but banks are specially designed to store money safely.' },
+                    { id: 'post', icon: '📮', name: 'Post Office', feedback: 'Post offices handle some money services, but banks are the money experts.' },
+                    { id: 'hospital', icon: '🏥', name: 'Hospital', feedback: 'Hospitals help with health, but banks help with money storage and access.' }
+                ], completed: false
+            }
+        ];
+
+        let selectedScenarios = [];
+        let currentScenarioIndex = 0;
+        let completedScenarios = 0;
+        let currentScenario = null;
+
+        function selectRandomScenarios() {
+            // Shuffle the scenario pool
+            const shuffled = [...scenarioPool].sort(() => Math.random() - 0.5);
+            // Take first 10 scenarios
+            selectedScenarios = shuffled.slice(0, 10);
+            // Reset completion status
+            selectedScenarios.forEach(scenario => scenario.completed = false);
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function updateProgress() {
+            completedScenarios = selectedScenarios.filter(s => s.completed).length;
+            document.getElementById('progressInfo').textContent = `${completedScenarios} problems solved • ${10 - completedScenarios} remaining`;
+        }
+
+        function startMission() {
+            selectRandomScenarios(); // Select 10 random scenarios
+            currentScenarioIndex = 0;
+            showScenario();
+            showScreen('scenarioScreen');
+            document.getElementById('headerTitle').textContent = '🧠 Think & Choose';
+            
+            // Add a little celebration when starting!
+            setTimeout(createCelebrationBurst, 200);
+        }
+
+        function showScenario() {
+            currentScenario = selectedScenarios[currentScenarioIndex];
+            
+            document.getElementById('scenarioNumber').textContent = `Problem ${currentScenarioIndex + 1} of 10`;
+            document.getElementById('scenarioIcon').textContent = currentScenario.image;
+            document.getElementById('scenarioTitle').textContent = currentScenario.title;
+            document.getElementById('scenarioSituation').textContent = currentScenario.situation;
+            
+            renderChoices();
+            updateProgress();
+        }
+
+        function renderChoices() {
+            const container = document.getElementById('choicesGrid');
+            container.innerHTML = '';
+
+            currentScenario.choices.forEach(choice => {
+                const choiceDiv = document.createElement('div');
+                choiceDiv.className = 'choice-option';
+                choiceDiv.innerHTML = `
+                    <div class="choice-icon">${choice.icon}</div>
+                    <div class="choice-name">${choice.name}</div>
+                `;
+                
+                choiceDiv.addEventListener('click', () => makeChoice(choice));
+                container.appendChild(choiceDiv);
+            });
+        }
+
+        function makeChoice(selectedChoice) {
+            const isCorrect = selectedChoice.id === currentScenario.correctChoice;
+            
+            // Visual feedback on choices
+            document.querySelectorAll('.choice-option').forEach((choiceDiv, index) => {
+                const choice = currentScenario.choices[index];
+                choiceDiv.style.pointerEvents = 'none';
+                
+                if (choice.id === currentScenario.correctChoice) {
+                    choiceDiv.classList.add('correct');
+                    // Add sparkle effect to correct choice
+                    if (isCorrect) {
+                        createSparkles(choiceDiv);
+                        choiceDiv.classList.add('pulse-glow');
+                    }
+                } else if (choice.id === selectedChoice.id && !isCorrect) {
+                    choiceDiv.classList.add('wrong');
+                }
+            });
+
+            // Show feedback after a short delay
+            setTimeout(() => {
+                showFeedback(selectedChoice, isCorrect);
+            }, 1000);
+        }
+
+        function showFeedback(selectedChoice, isCorrect) {
+            const feedbackIcon = document.getElementById('feedbackIcon');
+            const feedbackTitle = document.getElementById('feedbackTitle');
+            const feedbackMessage = document.getElementById('feedbackMessage');
+            
+            if (isCorrect) {
+                feedbackIcon.textContent = '🎉';
+                feedbackTitle.textContent = 'Perfect Choice!';
+                feedbackTitle.className = 'feedback-title correct';
+                currentScenario.completed = true;
+                
+                // Trigger celebration effects for correct answer!
+                setTimeout(celebrateCorrectAnswer, 100);
+            } else {
+                feedbackIcon.textContent = '🤔';
+                feedbackTitle.textContent = 'Think Again!';
+                feedbackTitle.className = 'feedback-title wrong';
+            }
+            
+            feedbackMessage.textContent = selectedChoice.feedback;
+            
+            // Hide/show appropriate buttons
+            const tryAgainBtn = document.querySelector('.back-btn');
+            const nextBtn = document.querySelector('.complete-btn');
+            
+            if (isCorrect) {
+                tryAgainBtn.style.display = 'none';
+                nextBtn.style.display = 'inline-block';
+                nextBtn.textContent = currentScenarioIndex === 9 ? '🏆 See Results' : '➡️ Next Problem';
+            } else {
+                tryAgainBtn.style.display = 'inline-block';
+                nextBtn.style.display = 'none';
+            }
+            
+            showScreen('feedbackScreen');
+        }
+
+        function nextScenario() {
+            currentScenarioIndex++;
+            if (currentScenarioIndex >= selectedScenarios.length) {
+                showCompletionScreen();
+            } else {
+                showScenario();
+                showScreen('scenarioScreen');
+            }
+        }
+
+        function goBackToScenario() {
+            // Reset choice visuals and remove celebration effects
+            document.querySelectorAll('.choice-option').forEach(choiceDiv => {
+                choiceDiv.style.pointerEvents = 'auto';
+                choiceDiv.classList.remove('correct', 'wrong', 'pulse-glow');
+            });
+            showScreen('scenarioScreen');
+        }
+
+        function showCompletionScreen() {
+            const solvedCount = selectedScenarios.filter(s => s.completed).length;
+            document.getElementById('headerTitle').textContent = '🎉 Well Done!';
+            document.getElementById('progressInfo').textContent = `You solved ${solvedCount} out of 10 problems!`;
+            showScreen('completionScreen');
+            
+            // Trigger big celebration effects for game completion!
+            setTimeout(celebrateGameCompletion, 300);
+        }
+
+        function restartMission() {
+            selectedScenarios.forEach(scenario => scenario.completed = false);
+            currentScenarioIndex = 0;
+            completedScenarios = 0;
+            startMission();
+        }
+
+        function goHome() {
+            selectedScenarios = [];
+            currentScenarioIndex = 0;
+            completedScenarios = 0;
+            currentScenario = null;
+            showScreen('welcomeScreen');
+            document.getElementById('headerTitle').textContent = '🏘️ Neighbourhood Helper Day';
+            document.getElementById('progressInfo').textContent = 'Ready to solve neighbourhood problems!';
+        }
+
+        // Initialize the game
+        updateProgress();
+
+        // Celebration Functions
+        function createConfetti() {
+            const confettiContainer = document.createElement('div');
+            confettiContainer.className = 'confetti-container';
+            document.body.appendChild(confettiContainer);
+
+            // Create confetti pieces
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                
+                // Random colors
+                const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#a29bfe', '#fd79a8', '#ff9f43', '#7bed9f', '#70a1ff'];
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                // Random positioning and timing
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                
+                // Random shapes (some rectangular, some round)
+                if (Math.random() > 0.5) {
+                    confetti.style.borderRadius = '0';
+                    confetti.style.width = '12px';
+                    confetti.style.height = '8px';
+                }
+                
+                confettiContainer.appendChild(confetti);
+            }
+
+            // Remove confetti after animation
+            setTimeout(() => {
+                if (confettiContainer.parentNode) {
+                    confettiContainer.parentNode.removeChild(confettiContainer);
+                }
+            }, 5000);
+        }
+
+        function createSparkles(element) {
+            const rect = element.getBoundingClientRect();
+            
+            for (let i = 0; i < 8; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                
+                // Position around the element
+                sparkle.style.left = (rect.left + Math.random() * rect.width) + 'px';
+                sparkle.style.top = (rect.top + Math.random() * rect.height) + 'px';
+                
+                document.body.appendChild(sparkle);
+                
+                // Remove sparkle after animation
+                setTimeout(() => {
+                    if (sparkle.parentNode) {
+                        sparkle.parentNode.removeChild(sparkle);
+                    }
+                }, 1000);
+            }
+        }
+
+        function createCelebrationBurst() {
+            const burst = document.createElement('div');
+            burst.className = 'celebration-burst';
+            document.body.appendChild(burst);
+
+            setTimeout(() => {
+                if (burst.parentNode) {
+                    burst.parentNode.removeChild(burst);
+                }
+            }, 800);
+        }
+
+        function celebrateCorrectAnswer() {
+            // Add glow effect to feedback screen
+            const feedbackScreen = document.getElementById('feedbackScreen');
+            feedbackScreen.classList.add('bounce-celebration');
+            
+            // Create sparkles
+            const feedbackIcon = document.getElementById('feedbackIcon');
+            createSparkles(feedbackIcon);
+            
+            // Create small confetti burst
+            setTimeout(createCelebrationBurst, 300);
+            
+            // Remove animation class after it's done
+            setTimeout(() => {
+                feedbackScreen.classList.remove('bounce-celebration');
+            }, 800);
+        }
+
+        function celebrateGameCompletion() {
+            // Create big confetti shower
+            createConfetti();
+            
+            // Add celebration animation to completion screen
+            const completionScreen = document.getElementById('completionScreen');
+            completionScreen.classList.add('bounce-celebration');
+            
+            // Multiple celebration bursts
+            setTimeout(createCelebrationBurst, 200);
+            setTimeout(createCelebrationBurst, 600);
+            setTimeout(createCelebrationBurst, 1000);
+            
+            // Add pulse glow to celebration icon
+            const celebrationIcon = document.querySelector('.celebration-icon');
+            if (celebrationIcon) {
+                celebrationIcon.classList.add('pulse-glow');
+                
+                // Repeat the glow effect
+                setInterval(() => {
+                    celebrationIcon.classList.remove('pulse-glow');
+                    setTimeout(() => {
+                        celebrationIcon.classList.add('pulse-glow');
+                    }, 100);
+                }, 2000);
+            }
+            
+            // Remove animation class after it's done
+            setTimeout(() => {
+                completionScreen.classList.remove('bounce-celebration');
+            }, 800);
+        }
+    </script>
+</body>
+</html>
