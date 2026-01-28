@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠 Chapter 9 Quiz - Our Neighbourhood</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --quiz-primary: #FF6B6B;
+            --quiz-secondary: #4ECDC4;
+            --quiz-accent: #45B7D1;
+            --quiz-success: #96CEB4;
+            --quiz-warning: #FFEAA7;
+            --quiz-purple: #A29BFE;
+            --quiz-orange: #FD79A8;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --text-dark: #2d3436;
+            --text-light: #636e72;
+            --white: #ffffff;
+            --shadow-soft: 0 10px 40px rgba(0,0,0,0.1);
+            --shadow-hover: 0 15px 50px rgba(0,0,0,0.15);
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background Elements */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255, 107, 107, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(78, 205, 196, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(162, 155, 254, 0.1) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .quiz-container {
+            max-width: 900px;
+            width: 100%;
+            background: var(--white);
+            border-radius: 25px;
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .quiz-header {
+            background: linear-gradient(135deg, var(--quiz-primary) 0%, var(--quiz-orange) 100%);
+            padding: 25px;
+            text-align: center;
+            color: var(--white);
+            position: relative;
+        }
+
+        .quiz-header h1 {
+            font-size: 2.5em;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .quiz-progress {
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .quiz-content {
+            padding: 40px;
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Welcome Screen */
+        .welcome-icon {
+            font-size: 5em;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .quiz-info-box {
+            background: rgba(78, 205, 196, 0.1);
+            border: 2px solid var(--quiz-secondary);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .info-list p {
+            font-size: 1.1em;
+            color: var(--text-dark);
+            margin: 12px 0;
+            font-weight: 600;
+        }
+
+        /* Quiz Question */
+        .question-number {
+            background: var(--quiz-purple);
+            color: var(--white);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: 700;
+            margin: 0 auto 30px;
+            box-shadow: 0 5px 15px rgba(162, 155, 254, 0.3);
+        }
+
+        .question-text {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: var(--text-dark);
+            text-align: center;
+            margin-bottom: 30px;
+            line-height: 1.5;
+            background: rgba(78, 205, 196, 0.1);
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid var(--quiz-secondary);
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .option-btn {
+            background: var(--white);
+            border: 3px solid var(--quiz-accent);
+            padding: 20px;
+            border-radius: 15px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.2em;
+            font-weight: 600;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(78, 205, 196, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .option-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(69, 183, 209, 0.2);
+            border-color: var(--quiz-secondary);
+        }
+
+        .option-btn:hover::before {
+            left: 100%;
+        }
+
+        .option-btn.correct {
+            background: var(--quiz-success);
+            border-color: var(--quiz-success);
+            color: var(--white);
+            transform: scale(1.02);
+        }
+
+        .option-btn.wrong {
+            background: var(--quiz-primary);
+            border-color: var(--quiz-primary);
+            color: var(--white);
+            opacity: 0.7;
+        }
+
+        .option-btn.disabled {
+            pointer-events: none;
+        }
+
+        /* Feedback */
+        .feedback {
+            background: linear-gradient(135deg, var(--quiz-warning), #fdcb6e);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 20px 0;
+            animation: popIn 0.5s ease-out;
+        }
+
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .feedback h3 {
+            color: var(--text-dark);
+            font-size: 1.4em;
+            margin-bottom: 10px;
+        }
+
+        .feedback p {
+            color: var(--text-dark);
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        /* Results */
+        .results {
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--quiz-success), var(--quiz-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 30px auto;
+            color: var(--white);
+            font-size: 2.5em;
+            font-weight: 800;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .score-message {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+
+        .score-details {
+            background: rgba(162, 155, 254, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        /* Buttons */
+        .btn-start {
+            background: linear-gradient(135deg, var(--quiz-accent), var(--quiz-secondary));
+            color: var(--white);
+            padding: 20px 50px;
+            border: none;
+            border-radius: 50px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.4em;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-decoration: none;
+            margin: 20px;
+            box-shadow: 0 8px 30px rgba(69, 183, 209, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-start::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-start:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 12px 40px rgba(69, 183, 209, 0.4);
+        }
+
+        .btn-start:hover::before {
+            left: 100%;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-decoration: none;
+            margin: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--quiz-accent), var(--quiz-secondary));
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(69, 183, 209, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--quiz-purple), var(--quiz-primary));
+            color: var(--white);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(162, 155, 254, 0.3);
+        }
+
+        .btn-home {
+            background: var(--quiz-warning);
+            color: var(--text-dark);
+            padding: 10px 20px;
+            font-size: 0.9em;
+        }
+
+        .btn-home:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 234, 167, 0.4);
+        }
+
+        .continue-btn {
+            background: linear-gradient(135deg, var(--quiz-success), var(--quiz-secondary));
+            color: var(--white);
+            margin-top: 20px;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 600px) {
+            .quiz-header h1 {
+                font-size: 2em;
+            }
+            
+            .quiz-content {
+                padding: 20px;
+            }
+            
+            .question-text {
+                font-size: 1.2em;
+                padding: 20px;
+            }
+            
+            .option-btn {
+                font-size: 1.1em;
+                padding: 15px;
+            }
+
+            .score-circle {
+                width: 120px;
+                height: 120px;
+                font-size: 2em;
+            }
+
+            .btn-start {
+                font-size: 1.2em;
+                padding: 15px 35px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <h1 id="headerTitle">🧠 Our Neighbourhood Quiz</h1>
+            <div class="quiz-progress" id="progressDisplay"></div>
+        </div>
+        
+        <div class="quiz-content">
+            <!-- Welcome Screen -->
+            <div class="screen active" id="welcomeScreen">
+                <div style="text-align: center; margin: 20px 0 40px 0;">
+                    <button class="btn-start" onclick="startQuiz()">🚀 Start Quiz!</button>
+                </div>
+                <div class="welcome-icon">🏘️🧠✨</div>
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h2 style="font-size: 2.2em; color: var(--text-dark); margin-bottom: 15px;">Ready to Test Your Knowledge?</h2>
+                    <p style="font-size: 1.2em; color: var(--text-light);">Let's see how much you learned about our neighbourhood!</p>
+                </div>
+                
+                <div class="quiz-info-box">
+                    <h3 style="color: var(--text-dark); margin-bottom: 20px; font-size: 1.4em;">📋 What to Expect:</h3>
+                    <div class="info-list">
+                        <p>❓ <strong>10 Questions</strong> - Random questions from our chapter</p>
+                        <p>⭐ <strong>Score Points</strong> - Get points for correct answers</p>
+                        <p>🏛️ <strong>Learn More</strong> - About banks, helpers & community</p>
+                        <p>🎯 <strong>Have Fun</strong> - Learning through interactive quiz</p>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <p style="color: var(--text-light); font-style: italic;">Perfect for testing your neighbourhood knowledge!</p>
+                </div>
+            </div>
+
+            <!-- Question Screen -->
+            <div class="screen" id="questionScreen">
+                <div style="text-align: right; margin-bottom: 20px;">
+                    <button class="btn btn-home" onclick="goHome()">🏠 Home</button>
+                </div>
+                <div class="question-number" id="questionNumber">1</div>
+                <div class="question-text" id="questionText"></div>
+                <div class="options" id="optionsContainer"></div>
+                <div id="feedbackContainer"></div>
+            </div>
+
+            <!-- Results Screen -->
+            <div class="screen" id="resultsScreen">
+                <div style="text-align: right; margin-bottom: 20px;">
+                    <button class="btn btn-home" onclick="goHome()">🏠 Home</button>
+                </div>
+                <div class="results">
+                    <h2 style="color: var(--text-dark); margin-bottom: 20px;">🎉 Quiz Complete!</h2>
+                    <div class="score-circle" id="scoreDisplay">0/10</div>
+                    <div class="score-message" id="scoreMessage"></div>
+                    <div class="score-details" id="scoreDetails"></div>
+                    <div style="margin-top: 30px;">
+                        <button class="btn btn-primary" onclick="startQuiz()">🔄 Try Again</button>
+                        <button class="btn btn-secondary" onclick="goHome()">🏠 Back to Home</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Question pool - 30 questions covering all Chapter 9 topics
+        const questionPool = [
+            {
+                question: "What do we call the people and places near our house?",
+                options: ["A) Friends", "B) Neighbourhood", "C) City"],
+                correct: 1,
+                explanation: "The people and places near our house together make our neighbourhood!"
+            },
+            {
+                question: "Where do we go when we are sick?",
+                options: ["A) Bank", "B) Police station", "C) Hospital"],
+                correct: 2,
+                explanation: "We visit hospitals or clinics when we are sick to get medical help."
+            },
+            {
+                question: "Who helps us learn at school?",
+                options: ["A) Doctor", "B) Teacher", "C) Farmer"],
+                correct: 1,
+                explanation: "Teachers are community helpers who help us learn new things at school."
+            },
+            {
+                question: "What number do we call when there is a fire?",
+                options: ["A) 100", "B) 101", "C) 102"],
+                correct: 1,
+                explanation: "We call 101 for fire emergencies, and firefighters will come to help."
+            },
+            {
+                question: "Where do banks keep our money?",
+                options: ["A) In a bag", "B) Safely in the bank", "C) At home"],
+                correct: 1,
+                explanation: "Banks keep our money safe and secure in their secure systems."
+            },
+            {
+                question: "Who grows food for us to eat?",
+                options: ["A) Teacher", "B) Doctor", "C) Farmer"],
+                correct: 2,
+                explanation: "Farmers work hard to grow fruits, vegetables, rice, and wheat for us."
+            },
+            {
+                question: "What should we do with garbage?",
+                options: ["A) Throw on roads", "B) Put in dustbins", "C) Leave anywhere"],
+                correct: 1,
+                explanation: "We should always throw garbage in dustbins to keep our neighbourhood clean."
+            },
+            {
+                question: "Who catches thieves and keeps us safe?",
+                options: ["A) Farmer", "B) Policeman", "C) Tailor"],
+                correct: 1,
+                explanation: "Policemen help catch thieves and maintain law and order in our community."
+            },
+            {
+                question: "What do we use to get money from the bank anytime?",
+                options: ["A) ATM machine", "B) Phone", "C) Car"],
+                correct: 0,
+                explanation: "ATM machines let us withdraw money from our bank account anytime we need it."
+            },
+            {
+                question: "Who makes clothes for us?",
+                options: ["A) Doctor", "B) Tailor", "C) Policeman"],
+                correct: 1,
+                explanation: "Tailors are skilled community helpers who stitch and make clothes for us."
+            },
+            {
+                question: "What helps make our neighbourhood fresh and green?",
+                options: ["A) Cars", "B) Planting trees", "C) Buildings"],
+                correct: 1,
+                explanation: "Planting trees makes our neighbourhood fresh, green, and clean for everyone."
+            },
+            {
+                question: "Where do we report stolen things?",
+                options: ["A) Hospital", "B) Police station", "C) Bank"],
+                correct: 1,
+                explanation: "We go to the police station to report stolen things and other problems."
+            },
+            {
+                question: "Who treats us when we fall sick?",
+                options: ["A) Doctor", "B) Carpenter", "C) Farmer"],
+                correct: 0,
+                explanation: "Doctors are medical professionals who treat us when we are sick or injured."
+            },
+            {
+                question: "What should we never do on roads or in parks?",
+                options: ["A) Walk", "B) Play", "C) Litter"],
+                correct: 2,
+                explanation: "We should never litter on roads or in parks to keep our neighbourhood clean."
+            },
+            {
+                question: "Who makes doors, chairs, and windows for us?",
+                options: ["A) Carpenter", "B) Teacher", "C) Doctor"],
+                correct: 0,
+                explanation: "Carpenters are skilled workers who make wooden furniture and structures."
+            },
+            {
+                question: "People who help us are called:",
+                options: ["A) Neighbours", "B) Community helpers", "C) Friends"],
+                correct: 1,
+                explanation: "Community helpers are people who make our work easy and help our neighbourhood."
+            },
+            {
+                question: "What can we also store in a bank besides money?",
+                options: ["A) Food", "B) Jewellery and files", "C) Toys"],
+                correct: 1,
+                explanation: "Banks can safely store our jewellery and important files too."
+            },
+            {
+                question: "How should we treat our neighbours?",
+                options: ["A) Ignore them", "B) Hurt them", "C) Help them"],
+                correct: 2,
+                explanation: "We should always help our neighbours and never hurt or trouble them."
+            },
+            {
+                question: "What do firefighters use to put out fires?",
+                options: ["A) Sand", "B) Large water pipes", "C) Fans"],
+                correct: 1,
+                explanation: "Firefighters use large water pipes and fire engines to put out fires safely."
+            },
+            {
+                question: "What should we always show to our teachers?",
+                options: ["A) Anger", "B) Respect", "C) Fear"],
+                correct: 1,
+                explanation: "We must always respect our teachers who help us learn and grow."
+            },
+            {
+                question: "What comes to help us in medical emergencies?",
+                options: ["A) Fire engine", "B) Ambulance", "C) Bus"],
+                correct: 1,
+                explanation: "Ambulances are special vehicles that take patients to hospitals quickly."
+            },
+            {
+                question: "Besides schools, what other places are in our neighbourhood?",
+                options: ["A) Only houses", "B) Markets, hospitals, banks", "C) Nothing else"],
+                correct: 1,
+                explanation: "Our neighbourhood has many places like markets, hospitals, banks, and more."
+            },
+            {
+                question: "Why should we appreciate community helpers?",
+                options: ["A) They serve us with love", "B) They are rich", "C) They are famous"],
+                correct: 0,
+                explanation: "Community helpers serve us with love and care, so we should appreciate them."
+            },
+            {
+                question: "What keeps everyone in the neighbourhood healthy?",
+                options: ["A) Dirty environment", "B) Clean neighbourhood", "C) Loud noises"],
+                correct: 1,
+                explanation: "A clean and tidy neighbourhood helps everyone stay healthy and happy."
+            },
+            {
+                question: "What type of place is a fire station?",
+                options: ["A) Where firefighters stay", "B) Shopping center", "C) School"],
+                correct: 0,
+                explanation: "A fire station is where firefighters and fire engines stay ready to help."
+            },
+            {
+                question: "What makes our neighbourhood beautiful?",
+                options: ["A) Garbage everywhere", "B) Clean streets and trees", "C) Broken buildings"],
+                correct: 1,
+                explanation: "Clean streets, trees, and well-maintained areas make our neighbourhood beautiful."
+            },
+            {
+                question: "Why are banks important in our neighbourhood?",
+                options: ["A) They sell food", "B) They keep money safe", "C) They repair cars"],
+                correct: 1,
+                explanation: "Banks are important because they keep people's money safe and secure."
+            },
+            {
+                question: "What should children do to help their neighbourhood?",
+                options: ["A) Make noise", "B) Keep it clean", "C) Break things"],
+                correct: 1,
+                explanation: "Children should help keep their neighbourhood clean and take care of it."
+            },
+            {
+                question: "Who helps us by growing rice and wheat?",
+                options: ["A) Shopkeeper", "B) Farmer", "C) Driver"],
+                correct: 1,
+                explanation: "Farmers grow important food crops like rice and wheat that we eat every day."
+            },
+            {
+                question: "What is the main job of a police station?",
+                options: ["A) Sell medicine", "B) Maintain law and order", "C) Teach children"],
+                correct: 1,
+                explanation: "Police stations help maintain law and order and solve problems in our community."
+            }
+        ];
+
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let answeredQuestions = [];
+
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function selectRandomQuestions() {
+            const shuffled = shuffleArray(questionPool);
+            return shuffled.slice(0, 10);
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function startQuiz() {
+            currentQuestions = selectRandomQuestions();
+            currentQuestionIndex = 0;
+            score = 0;
+            answeredQuestions = [];
+            showQuestion();
+            showScreen('questionScreen');
+        }
+
+        function showQuestion() {
+            const question = currentQuestions[currentQuestionIndex];
+            
+            document.getElementById('questionNumber').textContent = currentQuestionIndex + 1;
+            document.getElementById('questionText').textContent = question.question;
+            document.getElementById('progressDisplay').textContent = `Question ${currentQuestionIndex + 1} of 10`;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'option-btn';
+                button.textContent = option;
+                button.onclick = () => selectAnswer(index);
+                optionsContainer.appendChild(button);
+            });
+            
+            document.getElementById('feedbackContainer').innerHTML = '';
+        }
+
+        function selectAnswer(selectedIndex) {
+            const question = currentQuestions[currentQuestionIndex];
+            const isCorrect = selectedIndex === question.correct;
+            
+            if (isCorrect) {
+                score++;
+            }
+            
+            answeredQuestions.push({
+                question: question.question,
+                correct: isCorrect,
+                selectedAnswer: question.options[selectedIndex],
+                correctAnswer: question.options[question.correct]
+            });
+            
+            // Show feedback
+            const options = document.querySelectorAll('.option-btn');
+            options.forEach((btn, index) => {
+                btn.classList.add('disabled');
+                if (index === question.correct) {
+                    btn.classList.add('correct');
+                } else if (index === selectedIndex && !isCorrect) {
+                    btn.classList.add('wrong');
+                }
+            });
+            
+            const feedbackHTML = `
+                <div class="feedback">
+                    <h3>${isCorrect ? '🎉 Correct!' : '📚 Learn More'}</h3>
+                    <p>${question.explanation}</p>
+                </div>
+                <button class="btn continue-btn" onclick="nextQuestion()">
+                    ${currentQuestionIndex < 9 ? 'Next Question →' : 'See Results 🎯'}
+                </button>
+            `;
+            
+            document.getElementById('feedbackContainer').innerHTML = feedbackHTML;
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < 10) {
+                showQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            const percentage = (score / 10) * 100;
+            let message = '';
+            let emoji = '';
+            
+            if (percentage >= 90) {
+                message = "🌟 Outstanding! You're a neighbourhood expert!";
+                emoji = "🏆";
+            } else if (percentage >= 70) {
+                message = "🎉 Great job! You know a lot about neighbourhoods!";
+                emoji = "⭐";
+            } else if (percentage >= 50) {
+                message = "👍 Good effort! Keep learning about your community!";
+                emoji = "📚";
+            } else {
+                message = "💪 Keep trying! Practice makes perfect!";
+                emoji = "🌱";
+            }
+            
+            document.getElementById('scoreDisplay').innerHTML = `${score}<br><span style="font-size: 0.4em;">out of 10</span>`;
+            document.getElementById('scoreMessage').innerHTML = `${emoji} ${message}`;
+            
+            const detailsHTML = `
+                <h3 style="color: var(--text-dark); margin-bottom: 15px;">Quiz Summary:</h3>
+                <p><strong>Correct Answers:</strong> ${score}/10</p>
+                <p><strong>Percentage:</strong> ${percentage}%</p>
+                <p style="margin-top: 15px; font-size: 0.9em; color: var(--text-light);">
+                    You learned about community helpers, neighbourhood places, and how to keep our community clean and safe!
+                </p>
+            `;
+            
+            document.getElementById('scoreDetails').innerHTML = detailsHTML;
+            document.getElementById('headerTitle').textContent = "🎯 Quiz Results";
+            document.getElementById('progressDisplay').textContent = `Final Score: ${score}/10`;
+            
+            showScreen('resultsScreen');
+        }
+
+        function goHome() {
+            document.getElementById('headerTitle').textContent = "🧠 Our Neighbourhood Quiz";
+            document.getElementById('progressDisplay').textContent = "";
+            showScreen('welcomeScreen');
+        }
+
+        // Add click animation to buttons
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('btn') || e.target.classList.contains('option-btn')) {
+                e.target.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    e.target.style.transform = '';
+                }, 150);
+            }
+        });
+    </script>
+</body>
+</html>

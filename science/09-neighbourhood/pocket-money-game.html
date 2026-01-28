@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💰 Pocket Money Decision - Neighborhood Adventures</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600;700&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #4A90E2;
+            --primary-green: #7ED321;
+            --primary-orange: #F5A623;
+            --primary-pink: #FF6B9D;
+            --primary-purple: #9013FE;
+            --bg-light: #FFF8E1;
+            --bg-white: #FFFFFF;
+            --text-dark: #2D3748;
+            --text-light: #4A5568;
+            --shadow: 0 8px 25px rgba(0,0,0,0.15);
+            --shadow-hover: 0 12px 35px rgba(0,0,0,0.2);
+        }
+
+        body {
+            font-family: 'Fredoka', cursive;
+            background: linear-gradient(135deg, var(--bg-light) 0%, #E8F5E8 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 107, 157, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(126, 211, 33, 0.1) 0%, transparent 50%);
+        }
+
+        .game-container {
+            max-width: 800px;
+            width: 100%;
+            background: var(--bg-white);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            animation: slideIn 0.6s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-purple) 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.1) 10px,
+                rgba(255,255,255,0.1) 20px
+            );
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stars {
+            font-size: 1.5em;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .scene {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .scene.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .scene-image {
+            font-size: 6em;
+            text-align: center;
+            margin-bottom: 30px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        .welcome-description {
+            background: linear-gradient(135deg, rgba(126, 211, 33, 0.1) 0%, rgba(74, 144, 226, 0.1) 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            border: 2px solid var(--primary-green);
+        }
+
+        .welcome-description p {
+            font-family: 'Comic Neue', cursive;
+            font-size: 1.3em;
+            color: var(--text-dark);
+            margin: 15px 0;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-blue) 100%);
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            border-radius: 50px;
+            font-family: 'Fredoka', cursive;
+            font-size: 1.5em;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .start-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .start-btn:hover::before {
+            left: 100%;
+        }
+
+        .start-btn:active {
+            transform: translateY(-1px) scale(1.02);
+        }
+
+        .welcome-footer {
+            text-align: center;
+            margin-top: 30px;
+            opacity: 0.7;
+        }
+
+        .welcome-footer p {
+            font-family: 'Comic Neue', cursive;
+            font-size: 1.1em;
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .scene-text {
+            font-family: 'Comic Neue', cursive;
+            font-size: 1.4em;
+            color: var(--text-dark);
+            text-align: center;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            background: rgba(126, 211, 33, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 5px solid var(--primary-green);
+        }
+
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .choice-btn {
+            background: linear-gradient(135deg, var(--primary-orange) 0%, var(--primary-pink) 100%);
+            color: white;
+            border: none;
+            padding: 20px 25px;
+            border-radius: 15px;
+            font-family: 'Fredoka', cursive;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .choice-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .choice-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .choice-btn:hover::before {
+            left: 100%;
+        }
+
+        .choice-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .choice-btn.option-a {
+            background: linear-gradient(135deg, var(--primary-orange) 0%, #FF8C42 100%);
+        }
+
+        .choice-btn.option-b {
+            background: linear-gradient(135deg, var(--primary-green) 0%, #4CAF50 100%);
+        }
+
+        .choice-btn.option-c {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #2196F3 100%);
+        }
+
+        .feedback {
+            background: rgba(255, 107, 157, 0.1);
+            border: 2px solid var(--primary-pink);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: center;
+            animation: popIn 0.5s ease-out;
+        }
+
+        @keyframes popIn {
+            0% { 
+                opacity: 0; 
+                transform: scale(0.8); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: scale(1); 
+            }
+        }
+
+        .feedback h3 {
+            color: var(--primary-pink);
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .feedback p {
+            font-family: 'Comic Neue', cursive;
+            font-size: 1.2em;
+            color: var(--text-dark);
+            line-height: 1.5;
+        }
+
+        .continue-btn {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-blue) 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-family: 'Fredoka', cursive;
+            font-size: 1.3em;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            margin: 20px auto;
+            display: block;
+        }
+
+        .continue-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .final-score {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-blue) 100%);
+            color: white;
+            text-align: center;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .final-score h2 {
+            font-size: 2.2em;
+            margin-bottom: 15px;
+        }
+
+        .final-score p {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        .final-btn {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-blue) 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-family: 'Fredoka', cursive;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            margin: 10px 15px;
+            display: inline-block;
+        }
+
+        .final-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, var(--primary-orange) 0%, var(--primary-pink) 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-family: 'Fredoka', cursive;
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            margin: 15px 10px;
+            opacity: 0.8;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            opacity: 1;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .scene-text {
+                font-size: 1.2em;
+            }
+            
+            .choice-btn {
+                font-size: 1.1em;
+                padding: 15px 20px;
+            }
+
+            .welcome-description p {
+                font-size: 1.1em;
+            }
+
+            .start-btn {
+                font-size: 1.3em;
+                padding: 15px 35px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1>💰 Pocket Money Decision</h1>
+            <div class="stars" id="starDisplay">⭐ Stars: 0/10</div>
+        </div>
+        
+        <div class="content">
+            <!-- Welcome/Home Screen -->
+            <div class="scene active" id="welcomeScene">
+                <div style="text-align: center; margin: 20px 0 40px 0;">
+                    <button class="start-btn" onclick="startGame()">🚀 Start Your Adventure!</button>
+                </div>
+                <div class="scene-image">🏠💰✨</div>
+                <div class="welcome-description">
+                    <p>🎯 Make smart choices with your pocket money</p>
+                    <p>🏛️ Learn about banks and saving</p>
+                    <p>⭐ Earn stars for good decisions</p>
+                    <p>🌟 Discover how banks help our neighborhood</p>
+                </div>
+                <div class="welcome-footer">
+                    <p>Perfect for young learners exploring money and community!</p>
+                </div>
+            </div>
+
+            <!-- Scene 1: Initial Decision -->
+            <div class="scene" id="scene1">
+                <div class="scene-image">👶💰</div>
+                <div class="scene-text">
+                    Your mom gives you ₹50 as pocket money for the week. You're so excited! What do you want to do first?
+                </div>
+                <div class="choices">
+                    <button class="choice-btn option-a" onclick="makeChoice('candy')">
+                        🍭 A) Run to the candy shop right now!
+                    </button>
+                    <button class="choice-btn option-b" onclick="makeChoice('save')">
+                        🐷 B) Put it safely in my piggy bank
+                    </button>
+                    <button class="choice-btn option-c" onclick="makeChoice('mom')">
+                        👩 C) Ask mom to keep it for me
+                    </button>
+                    <button class="reset-btn" onclick="confirmRestart()" style="margin-top: 20px;">🏠 Start Over</button>
+                </div>
+            </div>
+
+            <!-- Scene 2A: Candy Shop Path -->
+            <div class="scene" id="scene2a">
+                <div class="scene-image">🍭🏪</div>
+                <div class="feedback">
+                    <h3>⭐ OKAY CHOICE! (+1 star)</h3>
+                    <p>Candy tastes good, but spending all your money at once means you won't have any left for other things you might need!</p>
+                </div>
+                <div class="scene-text">
+                    You spent ₹30 on candy. You have ₹20 left. What now?
+                </div>
+                <div class="choices">
+                    <button class="choice-btn option-a" onclick="makeChoice('moreCandy')">
+                        🍬 A) Buy more candy with the rest!
+                    </button>
+                    <button class="choice-btn option-b" onclick="makeChoice('saveRest')">
+                        💰 B) Save the remaining ₹20
+                    </button>
+                    <button class="choice-btn option-c" onclick="makeChoice('giveFriend')">
+                        👫 C) Give it to my friend
+                    </button>
+                    <button class="reset-btn" onclick="confirmRestart()" style="margin-top: 20px;">🏠 Start Over</button>
+                </div>
+            </div>
+
+            <!-- Scene 2B: Piggy Bank Path -->
+            <div class="scene" id="scene2b">
+                <div class="scene-image">🐷💰</div>
+                <div class="feedback">
+                    <h3>⭐⭐⭐ GREAT CHOICE! (+3 stars)</h3>
+                    <p>Smart thinking! Saving money helps you buy bigger, better things later. Just like how banks keep people's money safe!</p>
+                </div>
+                <div class="scene-text">
+                    After a week, you find ₹25 more in your piggy bank from before. Now you have ₹75 total! What should you do?
+                </div>
+                <div class="choices">
+                    <button class="choice-btn option-a" onclick="makeChoice('buyCar')">
+                        🚗 A) Buy that toy car I wanted (₹70)
+                    </button>
+                    <button class="choice-btn option-b" onclick="makeChoice('keepSaving')">
+                        💎 B) Keep saving for something bigger
+                    </button>
+                    <button class="choice-btn option-c" onclick="makeChoice('emergency')">
+                        🍿 C) Take some out for emergency snacks
+                    </button>
+                    <button class="reset-btn" onclick="confirmRestart()" style="margin-top: 20px;">🏠 Start Over</button>
+                </div>
+            </div>
+
+            <!-- Scene 2C: Mom Keeps It Path -->
+            <div class="scene" id="scene2c">
+                <div class="scene-image">👩💝</div>
+                <div class="feedback">
+                    <h3>⭐⭐ GOOD CHOICE! (+2 stars)</h3>
+                    <p>Asking someone you trust to keep your money safe is smart! That's exactly what banks do - they keep money safe for people.</p>
+                </div>
+                <div class="scene-text">
+                    Mom suggests opening a real bank account for you. What do you think?
+                </div>
+                <div class="choices">
+                    <button class="choice-btn option-a" onclick="makeChoice('yesBank')">
+                        🏛️ A) Yes! That sounds grown-up and cool!
+                    </button>
+                    <button class="choice-btn option-b" onclick="makeChoice('noBank')">
+                        🏠 B) No, I want to keep it at home
+                    </button>
+                    <button class="choice-btn option-c" onclick="makeChoice('whatBank')">
+                        ❓ C) What's a bank account?
+                    </button>
+                    <button class="reset-btn" onclick="confirmRestart()" style="margin-top: 20px;">🏠 Start Over</button>
+                </div>
+            </div>
+
+            <!-- Scene 3: Learning About Banks -->
+            <div class="scene" id="scene3">
+                <div class="scene-image">🏛️💡</div>
+                <div class="scene-text">
+                    Later that week, you walk past the neighborhood bank with your family. You decide to look around and learn something new. What catches your attention?
+                </div>
+                <div class="choices">
+                    <button class="choice-btn option-a" onclick="makeChoice('atm')">
+                        🏧 A) There's an ATM machine outside
+                    </button>
+                    <button class="choice-btn option-b" onclick="makeChoice('safeMoney')">
+                        🔒 B) People are keeping their money here safely
+                    </button>
+                    <button class="choice-btn option-c" onclick="makeChoice('helpingPeople')">
+                        👥 C) The bank workers are helping everyone
+                    </button>
+                    <button class="reset-btn" onclick="confirmRestart()" style="margin-top: 20px;">🏠 Start Over</button>
+                </div>
+            </div>
+
+            <!-- Scene 4: Opening Bank Account -->
+            <div class="scene" id="scene4">
+                <div class="scene-image">🏛️✨</div>
+                <div class="scene-text">
+                    Your curiosity about the bank is so strong that your family decides to go inside! The bank worker is very friendly and explains how to open your first account. What are you most excited about?
+                </div>
+                <div class="choices">
+                    <button class="choice-btn option-a" onclick="makeChoice('getCard')">
+                        💳 A) Getting my very own ATM card!
+                    </button>
+                    <button class="choice-btn option-b" onclick="makeChoice('safeMoney')">
+                        🔒 B) Knowing my money is super safe here!
+                    </button>
+                    <button class="choice-btn option-c" onclick="makeChoice('learnMore')">
+                        📚 C) Learning how banks help the neighborhood!
+                    </button>
+                    <button class="reset-btn" onclick="confirmRestart()" style="margin-top: 20px;">🏠 Start Over</button>
+                </div>
+            </div>
+
+            <!-- Final Scene -->
+            <div class="scene" id="finalScene">
+                <div class="scene-image">🎉🏆</div>
+                <div class="final-score" id="finalScore">
+                    <!-- Score will be inserted here -->
+                </div>
+                <div class="scene-text">
+                    <strong>💡 KEY LEARNING:</strong><br>
+                    Banks keep our money safe in our neighborhood! ATMs let us take money when we need it, and saving helps us buy better things later!
+                </div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="final-btn" onclick="restartGame()">🔄 Play Again</button>
+                    <button class="final-btn" onclick="restartGame()">🏠 Back to Home</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStars = 0;
+        let currentScene = 'welcomeScene';
+        let storyPath = '';
+
+        function startGame() {
+            showScene('scene1');
+        }
+
+        function updateStars(stars) {
+            currentStars += stars;
+            document.getElementById('starDisplay').textContent = `⭐ Stars: ${currentStars}/10`;
+        }
+
+        function showScene(sceneId) {
+            // Hide all scenes
+            const scenes = document.querySelectorAll('.scene');
+            scenes.forEach(scene => scene.classList.remove('active'));
+            
+            // Show target scene
+            document.getElementById(sceneId).classList.add('active');
+            currentScene = sceneId;
+        }
+
+        function makeChoice(choice) {
+            switch(currentScene) {
+                case 'scene1':
+                    if (choice === 'candy') {
+                        updateStars(1);
+                        storyPath = 'candy';
+                        showScene('scene2a');
+                    } else if (choice === 'save') {
+                        updateStars(3);
+                        storyPath = 'save';
+                        showScene('scene2b');
+                    } else if (choice === 'mom') {
+                        updateStars(2);
+                        storyPath = 'mom';
+                        showScene('scene2c');
+                    }
+                    break;
+
+                case 'scene2a':
+                    if (choice === 'moreCandy') {
+                        updateStars(0);
+                        storyPath += '_moreCandy';
+                        showScene('scene3');
+                    } else if (choice === 'saveRest') {
+                        updateStars(2);
+                        storyPath += '_saveRest';
+                        showScene('scene3');
+                    } else if (choice === 'giveFriend') {
+                        updateStars(1);
+                        storyPath += '_giveFriend';
+                        showScene('scene3');
+                    }
+                    break;
+
+                case 'scene2b':
+                    if (choice === 'buyCar') {
+                        updateStars(3);
+                        storyPath += '_buyCar';
+                        showScene('scene3');
+                    } else if (choice === 'keepSaving') {
+                        updateStars(2);
+                        storyPath += '_keepSaving';
+                        showScene('scene3');
+                    } else if (choice === 'emergency') {
+                        updateStars(2);
+                        storyPath += '_emergency';
+                        showScene('scene3');
+                    }
+                    break;
+
+                case 'scene2c':
+                    if (choice === 'yesBank') {
+                        updateStars(3);
+                        storyPath += '_yesBank';
+                    } else if (choice === 'noBank') {
+                        updateStars(1);
+                        storyPath += '_noBank';
+                    } else if (choice === 'whatBank') {
+                        updateStars(2);
+                        storyPath += '_whatBank';
+                    }
+                    showScene('scene3');
+                    break;
+
+                case 'scene3':
+                    updateStars(1); // Small bonus for observation
+                    if (choice === 'atm') {
+                        storyPath += '_atm';
+                    } else if (choice === 'safeMoney') {
+                        storyPath += '_safeMoney';
+                    } else if (choice === 'helpingPeople') {
+                        storyPath += '_helpingPeople';
+                    }
+                    
+                    // Only go to bank account scene if they chose mom path and showed interest in banking
+                    if (storyPath.startsWith('mom') && (storyPath.includes('_yesBank') || storyPath.includes('_whatBank'))) {
+                        showScene('scene4');
+                    } else {
+                        showFinalScene();
+                    }
+                    break;
+
+                case 'scene4':
+                    updateStars(1); // Bonus for completing the bank account process
+                    if (choice === 'getCard') {
+                        storyPath += '_getCard';
+                    } else if (choice === 'safeMoney') {
+                        storyPath += '_safeMoney2';
+                    } else if (choice === 'learnMore') {
+                        storyPath += '_learnMore';
+                    }
+                    showFinalScene();
+                    break;
+            }
+        }
+
+        function showFinalScene() {
+            const finalScore = document.getElementById('finalScore');
+            let badge = '';
+            let message = '';
+            let outcome = '';
+
+            // Split story path to analyze each part
+            const pathParts = storyPath.split('_');
+            const initialChoice = pathParts[0]; // candy, save, or mom
+            const secondChoice = pathParts[1]; // depends on first choice
+            const bankObservation = pathParts[2]; // atm, safeMoney, or helpingPeople
+            const bankAccountChoice = pathParts[3]; // getCard, safeMoney2, or learnMore (if applicable)
+
+            // Determine outcome based on the primary story choices
+            if (initialChoice === 'candy') {
+                if (secondChoice === 'moreCandy') {
+                    outcome = "You spent all ₹50 on candy! It was delicious, but now you have no money left. You learned that spending everything at once means you can't buy other things you might need.";
+                } else if (secondChoice === 'saveRest') {
+                    outcome = "Great balance! You bought ₹30 worth of candy AND saved ₹20. You learned that enjoying some treats while saving some money can be a smart approach.";
+                } else if (secondChoice === 'giveFriend') {
+                    outcome = "How generous! You decided to give ₹20 to your friend. You learned that sharing with others is a kind way to use your money.";
+                }
+            } else if (initialChoice === 'save') {
+                if (secondChoice === 'buyCar') {
+                    outcome = "Excellent planning! You saved your ₹50, found ₹25 more in your piggy bank, and had enough to buy the ₹70 toy car with ₹5 left over. Saving really pays off!";
+                } else if (secondChoice === 'keepSaving') {
+                    outcome = "Amazing patience! You decided to keep saving your ₹75 for something even bigger. You learned that saving takes patience but can help you get better things.";
+                } else if (secondChoice === 'emergency') {
+                    outcome = "Smart thinking! You kept most of your savings but took out a little money for emergency snacks when you needed them. Good planning!";
+                }
+            } else if (initialChoice === 'mom') {
+                if (secondChoice === 'yesBank') {
+                    outcome = "Wonderful! You and mom went to the bank and opened your very first bank account. You now understand how banks work and have your own way to save money safely.";
+                } else if (secondChoice === 'noBank') {
+                    outcome = "You kept your money at home with mom, which is safe! Even though you didn't open an account, you learned about how banks help people in our neighborhood.";
+                } else if (secondChoice === 'whatBank') {
+                    outcome = "Great question! After learning what a bank account is, you were so curious that you decided to open one. Now you understand how banks help people save money safely.";
+                }
+            }
+
+            // Add observation learning based on what they noticed at the bank
+            if (bankObservation === 'atm') {
+                outcome += " When you walked past the bank, you noticed the ATM machine and learned that these help people get their money anytime they need it!";
+            } else if (bankObservation === 'safeMoney') {
+                outcome += " You observed how banks keep people's money safe and secure, just like a giant piggy bank for everyone in the neighborhood!";
+            } else if (bankObservation === 'helpingPeople') {
+                outcome += " You watched the bank workers helping customers and learned that bankers are community helpers, just like doctors and teachers!";
+            }
+
+            // Add bank account experience (only for paths that went to scene 4)
+            if (bankAccountChoice) {
+                if (bankAccountChoice === 'getCard') {
+                    outcome += " Inside the bank, you were most excited about getting your own ATM card so you can access your money safely anytime!";
+                } else if (bankAccountChoice === 'safeMoney2') {
+                    outcome += " At the bank, you felt happy knowing your money would be completely safe there, protected by the bank's security!";
+                } else if (bankAccountChoice === 'learnMore') {
+                    outcome += " The friendly bank worker taught you how banks help keep everyone's money safe and how they are important helpers in our neighborhood!";
+                }
+            }
+
+            // Determine badge and message based on score
+            if (currentStars >= 10) {
+                badge = '🏆 BANKING EXPERT';
+                message = 'Perfect score! You mastered money management AND banking!';
+            } else if (currentStars >= 8) {
+                badge = '💳 MONEY MASTER';
+                message = 'Outstanding! You made excellent financial decisions!';
+            } else if (currentStars >= 6) {
+                badge = '💰 SMART SAVER';
+                message = 'Great job! You learned a lot about money management!';
+            } else if (currentStars >= 4) {
+                badge = '⭐ MONEY LEARNER';
+                message = 'Good effort! You\'re learning about money and banks!';
+            } else {
+                badge = '🌟 GOOD TRY';
+                message = 'Keep learning! Every choice teaches us something new!';
+            }
+
+            finalScore.innerHTML = `
+                <h2>🎉 Adventure Complete!</h2>
+                <p><strong>${badge}</strong></p>
+                <p>Final Score: ${currentStars}/10 stars</p>
+                <p>${message}</p>
+                <p style="margin-top: 15px; font-size: 1.1em; font-family: 'Comic Neue', cursive;">${outcome}</p>
+            `;
+
+            showScene('finalScene');
+        }
+
+        function restartGame() {
+            // Add visual feedback
+            console.log('Restarting game...');
+            
+            currentStars = 0;
+            currentScene = 'welcomeScene';
+            storyPath = '';
+            document.getElementById('starDisplay').textContent = '⭐ Stars: 0/10';
+            showScene('welcomeScene');
+            
+            // Scroll to top for better UX
+            window.scrollTo(0, 0);
+        }
+
+        function confirmRestart() {
+            if (confirm("Are you sure you want to start over? You'll lose your progress!")) {
+                restartGame();
+            }
+        }
+
+        // Add some fun sound effects (visual feedback for now)
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('choice-btn')) {
+                e.target.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    e.target.style.transform = '';
+                }, 150);
+            }
+        });
+    </script>
+</body>
+</html>
