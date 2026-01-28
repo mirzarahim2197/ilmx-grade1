@@ -372,19 +372,76 @@
 
         /* Mobile Responsive */
         @media (max-width: 600px) {
+            body {
+                padding: 10px;
+                align-items: flex-start;
+            }
+
+            .quiz-header {
+                padding: 12px;
+            }
+
             .quiz-header h1 {
-                font-size: 2em;
+                font-size: 1.4em;
             }
-            
+
             .quiz-content {
-                padding: 20px;
+                padding: 15px;
             }
-            
+
+            /* Welcome screen compact layout */
+            .welcome-icon {
+                font-size: 2.5em;
+                margin-bottom: 10px;
+            }
+
+            #welcomeScreen h2 {
+                font-size: 1.3em !important;
+                margin-bottom: 8px !important;
+            }
+
+            #welcomeScreen > div > p {
+                font-size: 0.95em !important;
+            }
+
+            .quiz-info-box {
+                padding: 12px;
+                margin: 15px 0;
+            }
+
+            .quiz-info-box h3 {
+                font-size: 1.1em !important;
+                margin-bottom: 10px !important;
+            }
+
+            .info-list p {
+                font-size: 0.9em;
+                margin: 6px 0;
+            }
+
+            .btn-start {
+                font-size: 1em;
+                padding: 12px 25px;
+                margin: 10px;
+            }
+
+            #welcomeScreen > div:first-child {
+                margin: 10px 0 15px 0 !important;
+            }
+
+            #welcomeScreen > div:last-child {
+                margin-top: 10px !important;
+            }
+
+            #welcomeScreen > div:last-child p {
+                font-size: 0.85em !important;
+            }
+
             .question-text {
                 font-size: 1.2em;
                 padding: 20px;
             }
-            
+
             .option-btn {
                 font-size: 1.1em;
                 padding: 15px;
@@ -394,11 +451,6 @@
                 width: 120px;
                 height: 120px;
                 font-size: 2em;
-            }
-
-            .btn-start {
-                font-size: 1.2em;
-                padding: 15px 35px;
             }
         }
     </style>
